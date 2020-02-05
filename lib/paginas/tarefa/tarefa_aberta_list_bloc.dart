@@ -68,6 +68,7 @@ class TarefaAbertaListBloc {
           .where("inicio", isLessThan: DateTime.now())
           .snapshots();
 /*
+deusehbom100prec@ta
                     Vnow
     ^inicio                     ^fim
         ^iniciou             ^iniciou+tempo
