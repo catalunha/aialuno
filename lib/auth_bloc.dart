@@ -149,7 +149,7 @@ class AuthBloc {
     } else if (event is LogoutAuthBlocEvent) {
       _authApi.logout();
     }else if (event is ResetPassword) {
-      // _authApi.sendPasswordResetEmail(_state.email);
+      _authApi.sendPasswordResetEmail(_state.email);
     }
   }
 
