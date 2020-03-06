@@ -3,6 +3,7 @@ import 'package:aialuno/modelos/base_model.dart';
 import 'package:aialuno/modelos/problema_model.dart';
 import 'package:aialuno/modelos/usuario_model.dart';
 
+
 class SimulacaoModel extends FirestoreModel {
   static final String collection = "Simulacao";
   bool ativo;
@@ -10,9 +11,7 @@ class SimulacaoModel extends FirestoreModel {
   int numero;
   UsuarioFk professor;
   ProblemaFk problema;
-  bool algoritmoDoAdmin;
-  bool algoritmoDoProfessor;
-  int ordem;
+  int valorGabaritoNumero;
 
   String nome;
   String descricao;
@@ -27,10 +26,8 @@ class SimulacaoModel extends FirestoreModel {
     this.numero,
     this.professor,
     this.problema,
-    this.algoritmoDoAdmin,
-    this.algoritmoDoProfessor,
     this.nome,
-    this.ordem,
+    this.valorGabaritoNumero,
     this.descricao,
     this.url,
     this.variavel,
@@ -53,11 +50,8 @@ class SimulacaoModel extends FirestoreModel {
             map['modificado'].millisecondsSinceEpoch)
         : null;
 
-    if (map.containsKey('algoritmoDoAdmin'))
-      algoritmoDoAdmin = map['algoritmoDoAdmin'];
-    if (map.containsKey('algoritmoDoProfessor'))
-      algoritmoDoProfessor = map['algoritmoDoProfessor'];
-    if (map.containsKey('ordemAdicionada')) ordem = map['ordemAdicionada'];
+    if (map.containsKey('valorGabaritoNumero'))
+      valorGabaritoNumero = map['valorGabaritoNumero'];
     if (map.containsKey('nome')) nome = map['nome'];
     if (map.containsKey('descricao')) descricao = map['descricao'];
     if (map.containsKey('url')) url = map['url'];
@@ -91,11 +85,7 @@ class SimulacaoModel extends FirestoreModel {
     }
 
     if (modificado != null) data['modificado'] = this.modificado;
-    if (algoritmoDoAdmin != null)
-      data['algoritmoDoAdmin'] = this.algoritmoDoAdmin;
-    if (algoritmoDoProfessor != null)
-      data['algoritmoDoProfessor'] = this.algoritmoDoProfessor;
-    if (ordem != null) data['ordemAdicionada'] = this.ordem;
+    if (valorGabaritoNumero != null) data['valorGabaritoNumero'] = this.valorGabaritoNumero;
     if (nome != null) data['nome'] = this.nome;
     if (descricao != null) data['descricao'] = this.descricao;
     if (url != null) data['url'] = this.url;
@@ -115,22 +105,22 @@ class SimulacaoModel extends FirestoreModel {
     return data;
   }
 }
-
+/// Tipo: nome | palavra | texto | url | urlimagem
 class Variavel {
+  int numero;
   String nome;
-  int ordem;
   String tipo;
   String valor;
 
   Variavel({
     this.nome,
-    this.ordem,
+    this.numero,
     this.tipo,
     this.valor,
   });
 
   Variavel.fromMap(Map<dynamic, dynamic> map) {
-    if (map.containsKey('ordem')) ordem = map['ordem'];
+    if (map.containsKey('numero')) numero = map['numero'];
     if (map.containsKey('nome')) nome = map['nome'];
     if (map.containsKey('tipo')) tipo = map['tipo'];
     if (map.containsKey('valor')) valor = map['valor'];
@@ -138,17 +128,18 @@ class Variavel {
 
   Map<dynamic, dynamic> toMap() {
     final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
-    if (ordem != null) data['ordem'] = this.ordem;
+    if (numero != null) data['numero'] = this.numero;
     if (nome != null) data['nome'] = this.nome;
     if (tipo != null) data['tipo'] = this.tipo;
     if (valor != null) data['valor'] = this.valor;
     return data;
   }
 }
+/// Tipo: nome | palavra | texto | url | urlimagem | arquivo | imagem
 
 class Gabarito {
+  int numero;
   String nome;
-  int ordem;
   String tipo;
   String valor;
   String resposta;
@@ -158,7 +149,7 @@ class Gabarito {
 
   Gabarito({
     this.nome,
-    this.ordem,
+    this.numero,
     this.tipo,
     this.valor,
     this.resposta,
@@ -169,7 +160,7 @@ class Gabarito {
 
   Gabarito.fromMap(Map<dynamic, dynamic> map) {
     if (map.containsKey('nome')) nome = map['nome'];
-    if (map.containsKey('ordem')) ordem = map['ordem'];
+    if (map.containsKey('numero')) numero = map['numero'];
     if (map.containsKey('tipo')) tipo = map['tipo'];
     if (map.containsKey('valor')) valor = map['valor'];
     if (map.containsKey('resposta')) resposta = map['resposta'];
@@ -182,17 +173,19 @@ class Gabarito {
   Map<dynamic, dynamic> toMap() {
     final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
     if (nome != null) data['nome'] = this.nome;
-    if (ordem != null) data['ordem'] = this.ordem;
+    if (numero != null) data['numero'] = this.numero;
     if (tipo != null) data['tipo'] = this.tipo;
     if (valor != null) data['valor'] = this.valor;
-    data['resposta'] = this.resposta;
+    if (resposta != null) data['resposta'] = this.resposta;
+    if (nota != null) data['nota'] = this.nota;
     // data['nota'] = this.nota ?? Bootstrap.instance.fieldValue.delete();
-    data['nota'] = this.nota;
-    data['respostaPath'] = this.respostaPath;
-    data['respostaUploadID'] = this.respostaUploadID;
+    if (respostaPath != null) data['respostaPath'] = this.respostaPath;
+    if (respostaUploadID != null)
+      data['respostaUploadID'] = this.respostaUploadID;
     return data;
   }
 }
+
 
 class SimulacaoFk {
   String id;

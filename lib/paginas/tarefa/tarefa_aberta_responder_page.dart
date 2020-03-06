@@ -116,7 +116,7 @@ class _TarefaAbertaResponderPageState extends State<TarefaAbertaResponderPage> {
             //       );
             var dicPedese = Dictionary.fromMap(tarefa.gabarito);
             var gabaritoOrderBy =
-                dicPedese.orderBy((kv) => kv.value.ordem).toDictionary$1((kv) => kv.key, (kv) => kv.value);
+                dicPedese.orderBy((kv) => kv.value.numero).toDictionary$1((kv) => kv.key, (kv) => kv.value);
             gabaritoMap = gabaritoOrderBy.toMap();
 
             for (var gabarito in gabaritoMap.entries) {
@@ -281,7 +281,7 @@ Sit.: $nota'''),
 
             var dicPedese = Dictionary.fromMap(tarefa.variavel);
             var gabaritoOrderBy =
-                dicPedese.orderBy((kv) => kv.value.ordem).toDictionary$1((kv) => kv.key, (kv) => kv.value);
+                dicPedese.orderBy((kv) => kv.value.numero).toDictionary$1((kv) => kv.key, (kv) => kv.value);
             variavelMap = gabaritoOrderBy.toMap();
             Widget icone;
 
@@ -399,7 +399,7 @@ Sit.: $nota'''),
             Map<String, Gabarito> gabaritoMap;
             var dicPedese = Dictionary.fromMap(gabarito);
             var gabaritoOrderBy =
-                dicPedese.orderBy((kv) => kv.value.ordem).toDictionary$1((kv) => kv.key, (kv) => kv.value);
+                dicPedese.orderBy((kv) => kv.value.numero).toDictionary$1((kv) => kv.key, (kv) => kv.value);
             gabaritoMap = gabaritoOrderBy.toMap();
             Widget icone;
 

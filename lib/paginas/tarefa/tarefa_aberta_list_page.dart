@@ -61,7 +61,7 @@ class _TarefaAbertaListPageState extends State<TarefaAbertaListPage> {
                   gabaritoMap.clear();
                   var dicPedese = Dictionary.fromMap(tarefa.gabarito);
                   var gabaritoOrderBy = dicPedese
-                      .orderBy((kv) => kv.value.ordem)
+                      .orderBy((kv) => kv.value.numero)
                       .toDictionary$1((kv) => kv.key, (kv) => kv.value);
                   gabaritoMap = gabaritoOrderBy.toMap();
                   notas = '';

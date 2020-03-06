@@ -66,7 +66,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
               trailing: IconButton(
                 icon: Icon(Icons.menu),
                 onPressed: () async {
-                  await cadastrarTarefa('0Teste1');
+                  // await cadastrarTarefa('0Teste1');
                   // await cadastrarTarefa('0Teste2');
                 },
               ),
@@ -247,63 +247,63 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
     // // print('>>> ok <<< ');
   }
 
-  Future cadastrarTarefa(String tarefaId) async {
-    final docRef =
-        _firestore.collection(TarefaModel.collection).document(tarefaId);
-    docRef.delete();
-    TarefaModel tarefaModel = TarefaModel(
-        id: tarefaId,
-        professor: UsuarioFk(id: '0Prof01', nome: 'prof01'),
-        turma: TurmaFk(id: '0Turma01', nome: 'turma01'),
-        avaliacao: AvaliacaoFk(id: '0Avaliacao01', nome: 'avaliacao01'),
-        questao: QuestaoFk(id: '0Questao01', numero: 1),
-        aluno: UsuarioFk(id: 'PMAxu4zKfmaOlYAmF3lgFGmCR1w2', nome: 'Cata'),
-        modificado: DateTime.now(),
-        inicio: DateTime.parse('2019-10-31T18:00:00-0300'),
-        // iniciou: DateTime.parse('2019-10-29T09:00:00.000Z'),
-        // enviou: DateTime.parse('2019-10-29T09:30:00.000Z'),
-        fim: DateTime.parse('2019-10-31T23:00:00-0300'),
-        tentativa: 5,
-        // tentou: 0,
-        tempo: 1,
-        aberta: true,
-        problema: ProblemaFk(
-          id: '0problema01',
-          nome: 'problema01',
-          url:
-              'https://firebasestorage.googleapis.com/v0/b/pi-brintec.appspot.com/o/texto_base.pdf?alt=media&token=617247d1-e4ae-452f-b79a-16a964a6745a',
-        ),
-        // simulacao: 'simulacao01',
-        variavel: {
-          'var01': Variavel(
-            nome: 'N1',
-            ordem: 0,
-            valor: '1',
-          ),
-          'var02': Variavel(
-            nome: 'N2',
-            ordem: 1,
-            valor: '2',
-          )
-        },
-        gabarito: {
-          'gabarito01':
-              Gabarito(nome: 'a', ordem: 0, tipo: 'numero', valor: '20'),
-          'gabarito02':
-              Gabarito(nome: 'b', ordem: 1, tipo: 'palavra', valor: 'sim'),
-          'gabarito03':
-              Gabarito(nome: 'c', ordem: 2, tipo: 'texto', valor: 'sim'),
-          'gabarito04': Gabarito(nome: 'd', ordem: 3, tipo: 'url', valor: 'sim'),
-          'gabarito05':
-              Gabarito(nome: 'e', ordem: 4, tipo: 'arquivo', valor: 'sim'),
-          'gabarito06':
-              Gabarito(nome: 'f', ordem: 5, tipo: 'imagem', valor: 'sim'),
-        });
+  // Future cadastrarTarefa(String tarefaId) async {
+  //   final docRef =
+  //       _firestore.collection(TarefaModel.collection).document(tarefaId);
+  //   docRef.delete();
+  //   TarefaModel tarefaModel = TarefaModel(
+  //       id: tarefaId,
+  //       professor: UsuarioFk(id: '0Prof01', nome: 'prof01'),
+  //       turma: TurmaFk(id: '0Turma01', nome: 'turma01'),
+  //       avaliacao: AvaliacaoFk(id: '0Avaliacao01', nome: 'avaliacao01'),
+  //       questao: QuestaoFk(id: '0Questao01', numero: 1),
+  //       aluno: UsuarioFk(id: 'PMAxu4zKfmaOlYAmF3lgFGmCR1w2', nome: 'Cata'),
+  //       modificado: DateTime.now(),
+  //       inicio: DateTime.parse('2019-10-31T18:00:00-0300'),
+  //       // iniciou: DateTime.parse('2019-10-29T09:00:00.000Z'),
+  //       // enviou: DateTime.parse('2019-10-29T09:30:00.000Z'),
+  //       fim: DateTime.parse('2019-10-31T23:00:00-0300'),
+  //       tentativa: 5,
+  //       // tentou: 0,
+  //       tempo: 1,
+  //       aberta: true,
+  //       problema: ProblemaFk(
+  //         id: '0problema01',
+  //         nome: 'problema01',
+  //         url:
+  //             'https://firebasestorage.googleapis.com/v0/b/pi-brintec.appspot.com/o/texto_base.pdf?alt=media&token=617247d1-e4ae-452f-b79a-16a964a6745a',
+  //       )
+  //       // simulacao: 'simulacao01',
+  //       // variavel: {
+  //       //   'var01': Variavel(
+  //       //     nome: 'N1',
+  //       //     ordem: 0,
+  //       //     valor: '1',
+  //       //   ),
+  //       //   'var02': Variavel(
+  //       //     nome: 'N2',
+  //       //     ordem: 1,
+  //       //     valor: '2',
+  //       //   )
+  //       // },
+  //       // gabarito: {
+  //       //   'gabarito01':
+  //       //       Gabarito(nome: 'a', ordem: 0, tipo: 'numero', valor: '20'),
+  //       //   'gabarito02':
+  //       //       Gabarito(nome: 'b', ordem: 1, tipo: 'palavra', valor: 'sim'),
+  //       //   'gabarito03':
+  //       //       Gabarito(nome: 'c', ordem: 2, tipo: 'texto', valor: 'sim'),
+  //       //   'gabarito04': Gabarito(nome: 'd', ordem: 3, tipo: 'url', valor: 'sim'),
+  //       //   'gabarito05':
+  //       //       Gabarito(nome: 'e', ordem: 4, tipo: 'arquivo', valor: 'sim'),
+  //       //   'gabarito06':
+  //       //       Gabarito(nome: 'f', ordem: 5, tipo: 'imagem', valor: 'sim'),
+  //       });
 
-    // print('=>>>>>>>> ${tarefaModel.aberta}');
-    await docRef.setData(tarefaModel.toMap(), merge: true);
-    // await docRef.setData(tarefaModel.toMap());
-  }
+  //   // print('=>>>>>>>> ${tarefaModel.aberta}');
+  //   await docRef.setData(tarefaModel.toMap(), merge: true);
+  //   // await docRef.setData(tarefaModel.toMap());
+  // }
 
   Future cadastrarTurma(String turmaId) async {
     final docRef =
