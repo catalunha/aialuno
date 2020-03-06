@@ -4,7 +4,7 @@
 versionCode 3
 versionName '1.0.2'
 Detalhes:
-- Desbloquear redefinir senha
+- Atualizar ordem para valor e gabarito
 
 ## Enviada em 13-02-2020
 versionCode 2
