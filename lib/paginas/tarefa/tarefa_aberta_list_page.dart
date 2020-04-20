@@ -134,8 +134,29 @@ Sit.: $notas
                   return _semTarefas(context);
                 } else {
                   return ListView(
-                    children: listaWidget,
-                  );
+                        children: listaWidget,
+                      );
+                  // return Column(
+                  //   children: <Widget>[
+                  //     ListTile(title: Text('Teste'),),
+                  //     // Row(
+                  //     //   children: <Widget>[
+                  //     //     ListTile(
+                  //     //       title: Text('Teste'),
+                  //     //     ),
+                  //     //   ],
+                  //     // ),
+                  //     Expanded(
+                  //       flex: 10,
+                  //       child: ListView(
+                  //         children: listaWidget,
+                  //       ),
+                  //     )
+                  //     // ListView(
+                  //     //   children: listaWidget,
+                  //     // ),
+                  //   ],
+                  // );
                 }
               } else {
                 return Text('Existem dados inválidos. Informe o suporte.');
