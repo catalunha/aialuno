@@ -23,14 +23,14 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
   _DefaultDrawerState() : authBloc = Bootstrap.instance.authBloc {
     rotas = Map<String, Rota>();
     if (Recursos.instance.plataforma == 'android') {
-      rotas["/"] = Rota("Home", Icons.home);
+      // rotas["/"] = Rota("Home", Icons.home);
       rotas["/tarefa/aberta"] = Rota("Tarefas", Icons.assignment);
       rotas["/turma/list"] =
           Rota("Turmas", Icons.book);
       rotas["/upload"] = Rota("Upload de arquivos", Icons.file_upload);
       // rotas["/desenvolvimento"] = Rota("Desenvolvimento", Icons.build);
     } else if (Recursos.instance.plataforma == 'web') {
-      rotas["/"] = Rota("Home", Icons.home);
+      // rotas["/"] = Rota("Home", Icons.home);
       rotas["/tarefa/aberta"] = Rota("Tarefas", Icons.assignment);
       rotas["/turma/list"] =
           Rota("Turmas", Icons.book);
@@ -269,7 +269,7 @@ class _DefaultEndDrawerState extends State<DefaultEndDrawer> {
                   title: Text('Trocar de usuário'),
                   onTap: () {
                     authBloc.dispatch(LogoutAuthBlocEvent());
-                    Navigator.pushReplacementNamed(context, "/");
+                    Navigator.pushReplacementNamed(context, "/sair");
                   },
                   leading: Icon(Icons.exit_to_app),
                 ));

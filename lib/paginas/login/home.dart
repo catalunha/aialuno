@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aialuno/auth_bloc.dart';
 import 'package:aialuno/componentes/login_required.dart';
-import 'package:aialuno/paginas/login/bemvindo_page.dart';
 import 'package:aialuno/paginas/tarefa/tarefa_aberta_list_page.dart';
 
 
@@ -20,8 +19,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultLoginRequired(
-      child: BemVindoPage(widget.authBloc),
-      // child: TarefaAbertaListPage(widget.authBloc),
+      // child: BemVindoPage(widget.authBloc),
+      child: TarefaAbertaListPage(widget.authBloc),
       authBloc: this.authBloc,
     );
   }

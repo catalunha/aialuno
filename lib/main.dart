@@ -1,3 +1,4 @@
+import 'package:aialuno/paginas/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:aialuno/bootstrap.dart';
 import 'package:aialuno/paginas/avaliacao/avaliacao_list_page.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         //homePage
-        "/": (context) => HomePage(authBloc),
+        "/": (context) => TarefaAbertaListPage(authBloc),
+        "/sair": (context) => LoginPage(authBloc),
 
         //upload
         "/upload": (context) => UploaderPage(authBloc),
