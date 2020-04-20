@@ -5,7 +5,6 @@ import 'package:aialuno/bootstrap.dart';
 import 'package:aialuno/componentes/clock.dart';
 import 'package:aialuno/componentes/default_scaffold.dart';
 import 'package:aialuno/modelos/simulacao_model.dart';
-import 'package:aialuno/modelos/tarefa_model.dart';
 import 'package:aialuno/paginas/tarefa/tarefa_aberta_list_bloc.dart';
 import 'package:queries/collections.dart';
 

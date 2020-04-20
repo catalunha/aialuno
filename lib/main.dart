@@ -33,8 +33,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         //homePage
-        "/": (context) => TarefaAbertaListPage(authBloc),
-        "/sair": (context) => LoginPage(authBloc),
+        "/": (context) => HomePage(authBloc),
 
         //upload
         "/upload": (context) => UploaderPage(authBloc),

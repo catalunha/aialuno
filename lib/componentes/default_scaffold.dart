@@ -269,7 +269,7 @@ class _DefaultEndDrawerState extends State<DefaultEndDrawer> {
                   title: Text('Trocar de usuário'),
                   onTap: () {
                     authBloc.dispatch(LogoutAuthBlocEvent());
-                    Navigator.pushReplacementNamed(context, "/sair");
+                    Navigator.pushReplacementNamed(context, "/");
                   },
                   leading: Icon(Icons.exit_to_app),
                 ));

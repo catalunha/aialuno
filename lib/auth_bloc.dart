@@ -158,6 +158,7 @@ class AuthBloc {
     _authApi.loginWithEmailAndPassword(_state.email, _state.password).then((r){
       if(r){
         _statusController.sink.add(AuthStatus.Authenticated);
+        print('autenticado');
       }else{
         _statusController.sink.add(AuthStatus.Unauthenticated);
       }
