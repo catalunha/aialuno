@@ -294,7 +294,7 @@ Sit.: $nota'''),
             List<Widget> listaWidget = List<Widget>();
             Map<String, Variavel> variavelMap;
             var tarefa = snapshot.data.tarefaModel;
-            print('tarefa.variavel: ${tarefa.variavel}');
+            // print('tarefa.variavel: ${tarefa.variavel}');
             if (tarefa.variavel != null) {
               var dicPedese = Dictionary.fromMap(tarefa.variavel);
               var gabaritoOrderBy = dicPedese
@@ -596,7 +596,7 @@ Sit.: $nota'''),
                 secondsRemaining: tarefa.tempoPResponder.inSeconds,
                 whenTimeExpires: () {
                   Navigator.pop(context);
-                  print('terminou clock');
+                  // print('terminou clock');
                 },
                 countDownTimerStyle: TextStyle(
                     color: Color(0XFFf5a623), fontSize: 17.0, height: 2),
@@ -652,7 +652,7 @@ class RespostaNumeroState extends State<RespostaNumero> {
       stream: bloc.stateStream,
       builder: (BuildContext context,
           AsyncSnapshot<TarefaAbertaResponderBlocState> snapshot) {
-        print('gabaritoValue.resposta: ${this.gabaritoValue.resposta}');
+        // print('gabaritoValue.resposta: ${this.gabaritoValue.resposta}');
         if (_textFieldController.text.isEmpty) {
           _textFieldController.text = this.gabaritoValue.resposta;
         }
@@ -670,7 +670,7 @@ class RespostaNumeroState extends State<RespostaNumero> {
                   // ),
                   controller: _textFieldController,
                   onChanged: (text) {
-                    print('gabaritoValue.resposta text: ${text}');
+                    // print('gabaritoValue.resposta text: ${text}');
                     bloc.eventSink(UpdatePedeseEvent(gabaritoKey, text));
                   },
                 )),
@@ -797,7 +797,7 @@ class ImagemSelect extends StatelessWidget {
         return arquivoPath;
       }
     } catch (e) {
-      print("_selecionarNovoArquivo: Unsupported operation" + e.toString());
+      // print("_selecionarNovoArquivo: Unsupported operation" + e.toString());
     }
     return null;
   }
@@ -817,8 +817,8 @@ class _ImagemFileUpload extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('url: $url');
-    // print('path: $path');
+    // // print('url: $url');
+    // // print('path: $path');
     Widget foto = Text('?');
     Widget msg = Text('');
 
@@ -854,12 +854,12 @@ class _ImagemFileUpload extends StatelessWidget {
           child: Image.network(url),
         ));
       } on Exception {
-        print('Exception');
+        // print('Exception');
         msg = ListTile(
           title: Text('Não consegui abrir a imagem.'),
         );
       } catch (e) {
-        print('catch');
+        // print('catch');
         msg = ListTile(
           title: Text('Não consegui abrir a imagem.'),
         );
@@ -1067,7 +1067,7 @@ class ArquivoSelect extends StatelessWidget {
         return arquivoPath;
       }
     } catch (e) {
-      print("_selecionarNovoArquivo: Unsupported operation" + e.toString());
+      // print("_selecionarNovoArquivo: Unsupported operation" + e.toString());
     }
     return null;
   }
@@ -1107,12 +1107,12 @@ class _UploadArquivo extends StatelessWidget {
           },
         );
       } on Exception {
-        print('Exception');
+        // print('Exception');
         msg = ListTile(
           title: Text('Não consegui abrir o arquivo.'),
         );
       } catch (e) {
-        print('catch');
+        // print('catch');
         msg = ListTile(
           title: Text('Não consegui abrir o arquivo.'),
         );

@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('homepage');
+    // print('homepage');
     return DefaultLoginRequired(
       // child: BemVindoPage(widget.authBloc),
       child: TarefaAbertaListPage(widget.authBloc),

@@ -144,6 +144,6 @@ class PerfilBloc {
     }
 
     if (!_stateController.isClosed) _stateController.add(_state);
-    print('event.runtimeType em PerfilBloc  = ${event.runtimeType}');
+    // print('event.runtimeType em PerfilBloc  = ${event.runtimeType}');
   }
 }

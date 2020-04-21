@@ -102,7 +102,7 @@ class AuthBloc {
     //       .document(userId)
     //       .setData({'tokenFCM': token}, merge: true);
     // }).catchError((err) {
-    //   print('authbloc: '+err.message.toString());
+    //   // print('authbloc: '+err.message.toString());
     // });
   }
 
@@ -158,7 +158,7 @@ class AuthBloc {
     _authApi.loginWithEmailAndPassword(_state.email, _state.password).then((r){
       if(r){
         _statusController.sink.add(AuthStatus.Authenticated);
-        print('autenticado');
+        // print('autenticado');
       }else{
         _statusController.sink.add(AuthStatus.Unauthenticated);
       }

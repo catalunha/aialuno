@@ -125,7 +125,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
             //       setState(() {
             //         hasTimerStopped = true;
             //       });
-            //       print('terminou clock');
+            //       // print('terminou clock');
             //     },
             //     countDownTimerStyle: TextStyle(
             //         color: Color(0XFFf5a623), fontSize: 17.0, height: 1.2),
@@ -144,7 +144,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
         List<dynamic> routes = List<dynamic>();
 
         routes.addAll(documentSnapshot.data['routes']);
-        // print(routes.runtimeType);
+        // // print(routes.runtimeType);
         routes.addAll([
           // Drawer
           // '/',
@@ -169,7 +169,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
         await documentSnapshot.reference
             .setData({"routes": routes}, merge: true);
       } else {
-        // print('Sem routes ${documentSnapshot.documentID}');
+        // // print('Sem routes ${documentSnapshot.documentID}');
       }
     }
   }
@@ -180,7 +180,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
     var snap = await docRef.get();
     List<dynamic> routes = List<dynamic>();
     routes.addAll(snap.data['routes']);
-    // print(routes.runtimeType);
+    // // print(routes.runtimeType);
     routes.addAll([
       //Drawer
       // '/',
@@ -244,7 +244,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
     //     _firestore.collection(UsuarioModel.collection).document(userId);
 
     // await docRef.setData(usuarioModel.toMap(), merge: true);
-    // // print('>>> ok <<< ');
+    // // // print('>>> ok <<< ');
   }
 
   // Future cadastrarTarefa(String tarefaId) async {
@@ -300,7 +300,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
   //       //       Gabarito(nome: 'f', ordem: 5, tipo: 'imagem', valor: 'sim'),
   //       });
 
-  //   // print('=>>>>>>>> ${tarefaModel.aberta}');
+  //   // // print('=>>>>>>>> ${tarefaModel.aberta}');
   //   await docRef.setData(tarefaModel.toMap(), merge: true);
   //   // await docRef.setData(tarefaModel.toMap());
   // }
@@ -371,7 +371,7 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
   }
 
   Future testarFirebaseCmds() async {
-    // print('+++ testarFirebaseCmds');
+    // // print('+++ testarFirebaseCmds');
     UsuarioModel usuarioModel = UsuarioModel(
       id: 'PMAxu4zKfmaOlYAmF3lgFGmCR1w2',
       foto: UploadFk(uploadID: 'NFnVSDPpbOwQejMu1jXh', url: null),
@@ -386,8 +386,8 @@ class _DesenvolvimentoState extends State<Desenvolvimento> {
     //     .where('routes', arrayContains: '/comunicacao/home')
     //     .getDocuments();
     // for (var item in docRef.documents) {
-    //   print('Doc encontrados: ${item.documentID}');
+    //   // print('Doc encontrados: ${item.documentID}');
     // }
-    // print('--- testarFirebaseCmds');
+    // // print('--- testarFirebaseCmds');
   }
 }

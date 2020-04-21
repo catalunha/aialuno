@@ -41,7 +41,7 @@ class LoginRequired extends StatelessWidget {
             r = splashPage;
             break;
           case AuthStatus.Unauthenticated:
-          print('login ok');
+          // print('login ok');
             r = loginPage;
             break;
           case AuthStatus.Authenticating:

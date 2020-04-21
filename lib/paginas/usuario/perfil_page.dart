@@ -215,7 +215,7 @@ class FotoUsuario extends StatelessWidget {
         return arquivoPath;
       }
     } catch (e) {
-      print("Unsupported operation" + e.toString());
+      // print("Unsupported operation" + e.toString());
     }
     return null;
   }
@@ -235,8 +235,8 @@ class _ImagemFileUpload extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('url: $url');
-    // print('path: $path');
+    // // print('url: $url');
+    // // print('path: $path');
     Widget foto = Text('?');
     Widget msg = Text('');
 
@@ -272,12 +272,12 @@ class _ImagemFileUpload extends StatelessWidget {
           child: Image.network(url),
         ));
       } on Exception {
-        print('Exception');
+        // print('Exception');
         msg = ListTile(
           title: Text('Não consegui abrir a imagem.'),
         );
       } catch (e) {
-        print('catch');
+        // print('catch');
         msg = ListTile(
           title: Text('Não consegui abrir a imagem.'),
         );

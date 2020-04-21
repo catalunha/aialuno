@@ -58,7 +58,7 @@ class _TarefaListPageState extends State<TarefaListPage> {
                 Map<String, Gabarito> gabaritoMap = Map<String, Gabarito>();
 
                 for (var tarefa in snapshot.data.tarefaList) {
-                  // print('tarefa.id: ${tarefa.id}');
+                  // // print('tarefa.id: ${tarefa.id}');
                   gabaritoMap.clear();
                   var dicPedese = Dictionary.fromMap(tarefa.gabarito);
                   var gabaritoOrderBy = dicPedese

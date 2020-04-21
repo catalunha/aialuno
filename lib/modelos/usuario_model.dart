@@ -39,7 +39,7 @@ class UsuarioModel extends FirestoreModel {
   @override
   UsuarioModel fromMap(Map<String, dynamic> map) {
     // for (var item in map.entries) {
-    //   print('${item.key} = ${item.value}');
+    //   // print('${item.key} = ${item.value}');
     // }
     if (map.containsKey('nome')) nome = map['nome'];
     if (map.containsKey('cracha')) cracha = map['cracha'];

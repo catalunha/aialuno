@@ -56,7 +56,7 @@ class _TarefaAbertaListPageState extends State<TarefaAbertaListPage> {
                 Map<String, Gabarito> gabaritoMap = Map<String, Gabarito>();
 
                 for (var tarefa in snapshot.data.tarefaList) {
-                  // print('tarefa.id: ${tarefa.id}');
+                  // // print('tarefa.id: ${tarefa.id}');
                   gabaritoMap.clear();
                   var dicPedese = Dictionary.fromMap(tarefa.gabarito);
                   var gabaritoOrderBy = dicPedese
@@ -79,7 +79,7 @@ class _TarefaAbertaListPageState extends State<TarefaAbertaListPage> {
                         secondsRemaining: tarefa.tempoPResponder.inSeconds,
                         whenTimeExpires: () {
                           Navigator.pop(context);
-                          print('terminou clock');
+                          // print('terminou clock');
                         },
                         countDownTimerStyle: TextStyle(
                           color: Colors.red,

@@ -93,6 +93,6 @@ class TurmaListBloc {
 
     _validateData();
     if (!_stateController.isClosed) _stateController.add(_state);
-    print('event.runtimeType em TurmaListBloc  = ${event.runtimeType}');
+    // print('event.runtimeType em TurmaListBloc  = ${event.runtimeType}');
   }
 }
