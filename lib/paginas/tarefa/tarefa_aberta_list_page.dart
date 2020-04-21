@@ -36,6 +36,30 @@ class _TarefaAbertaListPageState extends State<TarefaAbertaListPage> {
     bloc.dispose();
   }
 
+  Future<bool> _alerta(String msgAlerta) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(msgAlerta),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                }),
+            FlatButton(
+                child: Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
@@ -117,11 +141,24 @@ Usou ${tarefa.tentou ?? 0} de ${tarefa.tentativa} tentativas.
 Sit.: $notas
                             '''),
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                "/tarefa/responder",
-                                arguments: tarefa.id,
-                              );
+                              if (tarefa.iniciou != null) {
+                                Navigator.pushNamed(
+                                  context,
+                                  "/tarefa/responder",
+                                  arguments: tarefa.id,
+                                );
+                              } else {
+                                _alerta('Deseja realmente abrir esta tarefa AGORA ?')
+                                    .then((value) {
+                                  if (value) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      "/tarefa/responder",
+                                      arguments: tarefa.id,
+                                    );
+                                  }
+                                });
+                              }
                             },
                           ),
                         ],
@@ -133,8 +170,8 @@ Sit.: $notas
                   return _semTarefas(context);
                 } else {
                   return ListView(
-                        children: listaWidget,
-                      );
+                    children: listaWidget,
+                  );
                   // return Column(
                   //   children: <Widget>[
                   //     ListTile(title: Text('Teste'),),

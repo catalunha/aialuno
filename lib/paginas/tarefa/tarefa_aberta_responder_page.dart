@@ -48,6 +48,30 @@ class _TarefaAbertaResponderPageState extends State<TarefaAbertaResponderPage> {
     bloc.dispose();
   }
 
+  Future<bool> _alerta(String msgAlerta) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(msgAlerta),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                }),
+            FlatButton(
+                child: Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -67,7 +91,12 @@ class _TarefaAbertaResponderPageState extends State<TarefaAbertaResponderPage> {
               return FloatingActionButton(
                 onPressed: snapshot.data.isDataValid
                     ? () {
-                        bloc.eventSink(SaveEvent());
+                        _alerta('Salvar suas respostas reduz uma tentativa. Salvar AGORA ?')
+                            .then((value) {
+                          if (value) {
+                            bloc.eventSink(SaveEvent());
+                          }
+                        });
                       }
                     : null,
                 child: Icon(Icons.cloud_upload),
