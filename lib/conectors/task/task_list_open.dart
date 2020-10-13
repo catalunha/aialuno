@@ -4,6 +4,7 @@ import 'package:aialuno/routes.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:aialuno/states/types_states.dart';
 import 'package:aialuno/uis/task/task_list_ds.dart';
+import 'package:aialuno/uis/task/task_list_open_ds.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 
@@ -28,18 +29,17 @@ class ViewModel extends BaseModel<AppState> {
       );
 }
 
-class TaskList extends StatelessWidget {
+class TaskListOpen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ViewModel>(
       //debug: this,
       model: ViewModel(),
       onInit: (store) {
-        store.dispatch(
-            SetTaskFilterSyncTaskAction(TaskFilter.isActiveByClassroomActive));
+        store.dispatch(SetTaskFilterSyncTaskAction(TaskFilter.isActive));
         store.dispatch(StreamColTaskAsyncTaskAction());
       },
-      builder: (context, viewModel) => TaskListDS(
+      builder: (context, viewModel) => TaskListOpenDS(
         taskList: viewModel.taskList,
         onEditTaskCurrent: viewModel.onEditTaskCurrent,
       ),

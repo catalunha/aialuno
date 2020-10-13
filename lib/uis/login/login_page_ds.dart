@@ -47,7 +47,7 @@ class LoginPageDSState extends State<LoginPageDS> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('AI Aluno - Acessar')),
+          title: Center(child: Text('AI Estudante - Acessar')),
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),

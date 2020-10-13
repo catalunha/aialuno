@@ -1,4 +1,7 @@
+import 'package:aialuno/models/exame_model.dart';
+import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
+import 'package:aialuno/models/situation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,36 +18,40 @@ class TaskEditDS extends StatefulWidget {
   final int time;
   final int error;
   final int scoreQuestion;
-  // gestão da tarefa
-  final int attempted;
-  final bool isOpen;
+  // dados para atualização
+  final dynamic started;
+  final dynamic lastSendAnswer;
+  final dynamic attempted;
+  //Referencias
+  final ExameModel exameRef;
+  final QuestionModel questionRef;
+  final SituationModel situationRef;
+  //input e output
+  final Map<String, Input> simulationInput;
+  final Map<String, Output> simulationOutput;
 
-  final List<Input> simulationInput;
-  final List<Output> simulationOutput;
-
-  final Function(
-          dynamic, dynamic, int, int, int, int, int, bool, int, bool, bool)
-      onUpdateTask;
-  final Function(String, bool) onUpdateOutput;
-  final Function() onSeeTextTask;
+  //
+  final Function(Map<String, Output>) onUpdateSimulationOutput;
 
   const TaskEditDS({
     Key key,
-    this.start,
     this.end,
-    this.scoreExame,
     this.attempt,
     this.time,
     this.error,
-    this.scoreQuestion,
+    this.id,
+    this.exameRef,
+    this.questionRef,
+    this.situationRef,
+    this.started,
+    this.lastSendAnswer,
     this.attempted,
-    this.isOpen,
     this.simulationInput,
     this.simulationOutput,
-    this.onUpdateTask,
-    this.onUpdateOutput,
-    this.id,
-    this.onSeeTextTask,
+    this.onUpdateSimulationOutput,
+    this.start,
+    this.scoreExame,
+    this.scoreQuestion,
   }) : super(key: key);
   @override
   _TaskEditDSState createState() => _TaskEditDSState();
@@ -52,27 +59,13 @@ class TaskEditDS extends StatefulWidget {
 
 class _TaskEditDSState extends State<TaskEditDS> {
   final formKey = GlobalKey<FormState>();
-  bool isInvisibilityDelete = true;
 
-  //dados do exame
-  dynamic _start;
-  dynamic _end;
-  int _scoreExame;
-  //dados da questao
-  int _attempt;
-  int _time;
-  int _error;
-  int _scoreQuestion;
-  // gestão da tarefa
-  int _attempted;
-  bool _isOpen;
-  bool _nullStarted = false;
-  bool _isDelete = false;
+  Map<String, Output> _simulationOutput = Map<String, Output>(); //
+
   void validateData() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      widget.onUpdateTask(_start, _end, _scoreExame, _attempt, _time, _error,
-          _scoreQuestion, _nullStarted, _attempted, _isOpen, _isDelete);
+      widget.onUpdateSimulationOutput(_simulationOutput);
     } else {
       setState(() {});
     }
@@ -81,16 +74,27 @@ class _TaskEditDSState extends State<TaskEditDS> {
   @override
   void initState() {
     super.initState();
-    _isOpen = widget.isOpen;
-    _start = widget.start != null ? widget.start : DateTime.now();
-    _end = widget.end != null ? widget.end : DateTime.now();
+    _simulationOutput.addAll(widget.simulationOutput);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Editar tarefa ${widget.id.substring(0, 4)}'),
+        title: Text('Editar esta tarefa ${widget.id.substring(0, 4)}'),
+        actions: [
+          IconButton(
+            tooltip: 'Link para a proposta da tarefa',
+            icon: Icon(Icons.link),
+            onPressed: () async {
+              if (widget.situationRef.url != null) {
+                if (await canLaunch(widget.situationRef.url)) {
+                  await launch(widget.situationRef.url);
+                }
+              }
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(8),
@@ -110,187 +114,25 @@ class _TaskEditDSState extends State<TaskEditDS> {
       key: formKey,
       child: ListView(
         children: [
-          TextFormField(
-            initialValue:
-                widget.scoreExame == null ? '1' : widget.scoreExame.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText: 'Nota ou peso da avaliação (>=1):',
-            ),
-            onSaved: (newValue) => _scoreExame = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            initialValue: widget.time == null ? '3' : widget.time.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText: 'Horas para resolução após aberta a tarefa (>=1):',
-            ),
-            onSaved: (newValue) => _time = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            initialValue:
-                widget.attempt == null ? '3' : widget.attempt.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText: 'Número de tentativas no envio das respostas (>=1):',
-            ),
-            onSaved: (newValue) => _attempt = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            initialValue: widget.error == null ? '3' : widget.error.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText: 'Erro relativo na correção numérica (>=1 e <100):',
-            ),
-            onSaved: (newValue) => _error = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            initialValue: widget.scoreQuestion == null
-                ? '1'
-                : widget.scoreQuestion.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText: 'Nota ou peso da questão (>=1):',
-            ),
-            onSaved: (newValue) => _scoreQuestion = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            initialValue:
-                widget.attempted == null ? '0' : widget.attempted.toString(),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: TextInputType.number,
-            maxLines: null,
-            decoration: InputDecoration(
-              labelText:
-                  'Número de tentativas já realizadas no envio das respostas (0>=?<=tentativas):',
-            ),
-            onSaved: (newValue) => _attempted = int.parse(newValue),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Informe o que se pede.';
-              }
-              return null;
-            },
-          ),
+          Text('Inicia em: ${widget.start}'),
+          Text('Iniciada em: ${widget.started}'),
+          Text('Último envio: ${widget.lastSendAnswer}'),
+          Text('Finaliza em: ${widget.end}'),
+          Text('Tempo ao iniciar: ${widget.time}h'),
+          Text('Tentativas: ${widget.attempted} de ${widget.attempt}'),
+          Text(
+              'Peso do exame: ${widget.scoreExame} e da questão: ${widget.scoreQuestion}. '),
+          Text(
+              'Exame: ${widget.exameRef.name}. Questão: ${widget.questionRef.name}. Situação: ${widget.situationRef.name}. Link na barra superior.'),
           Row(children: [
-            Text(
-                'Entradas para a desenvolvimento: ${widget.simulationInput.length}'),
+            Text('Entradas para solução: ${widget.simulationInput.length}'),
           ]),
           ...simulationInputBuilder(context, widget.simulationInput),
           Row(children: [
             Text(
-                'Saídas do desenvolvimento: ${widget.simulationOutput.length}'),
+                'Respostas do desenvolvimento: ${widget.simulationOutput.length}'),
           ]),
           ...simulationOutputBuilder(context, widget.simulationOutput),
-          Text('Inicio do desenvolvimento:'),
-          Container(
-            height: 100,
-            width: 300,
-            child: CupertinoDatePicker(
-              initialDateTime: _start,
-              use24hFormat: true,
-              onDateTimeChanged: (datetime) {
-                setState(() {
-                  _start = datetime;
-                });
-              },
-            ),
-          ),
-          Text('Fim do desenvolvimento:'),
-          SizedBox(
-            height: 100,
-            child: CupertinoDatePicker(
-              initialDateTime: _end,
-              use24hFormat: true,
-              onDateTimeChanged: (datetime) {
-                setState(() {
-                  _end = datetime;
-                });
-              },
-            ),
-          ),
-          SwitchListTile(
-            value: _nullStarted,
-            title: _nullStarted
-                ? Text('Tarefa será reiniciada.')
-                : Text('Reinicia a tarefa?'),
-            onChanged: (value) {
-              setState(() {
-                _isDelete = value;
-              });
-            },
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              isInvisibilityDelete
-                  ? Container()
-                  : SwitchListTile(
-                      value: _isDelete,
-                      title: _isDelete
-                          ? Text('Tarefa será apagada.')
-                          : Text('Apagar esta tarefa ?'),
-                      onChanged: (value) {
-                        setState(() {
-                          _isDelete = value;
-                        });
-                      },
-                    ),
-              IconButton(
-                tooltip: 'Liberar opção para apagar este item',
-                color: Colors.grey[400],
-                icon: const Icon(
-                  Icons.delete,
-                  // size: 22.0,
-                ),
-                onPressed: () {
-                  setState(() {
-                    isInvisibilityDelete = !isInvisibilityDelete;
-                  });
-                },
-              ),
-            ],
-          ),
           Container(
             height: 50,
           ),
@@ -300,31 +142,27 @@ class _TaskEditDSState extends State<TaskEditDS> {
   }
 
   List<Widget> simulationInputBuilder(
-      BuildContext context, List<Input> simulationInputList) {
+      BuildContext context, Map<String, Input> simulationInputMap) {
     List<Widget> itemList = [];
-    for (Input simulationInput in simulationInputList) {
+    List<Input> inputList = simulationInputMap.values.toList();
+    inputList.sort((a, b) => a.name.compareTo(b.name));
+
+    for (var input in inputList) {
       Widget icone = Icon(Icons.question_answer);
-      if (simulationInput.type == 'numero') {
+      if (input.type == 'numero') {
         icone = Icon(Icons.looks_one);
-      } else if (simulationInput.type == 'palavra') {
+      } else if (input.type == 'palavra') {
         icone = Icon(Icons.text_format);
-      } else if (simulationInput.type == 'texto') {
-        // icone = Icon(Icons.text_fields);
-        icone = IconButton(
-          tooltip: 'ver textos desta tarefa',
-          icon: Icon(Icons.text_fields),
-          onPressed: () {
-            widget.onSeeTextTask();
-          },
-        );
-      } else if (simulationInput.type == 'url') {
+      } else if (input.type == 'texto') {
+        icone = Icon(Icons.text_fields);
+      } else if (input.type == 'url') {
         icone = IconButton(
           tooltip: 'Um link ao um site ou arquivo',
           icon: Icon(Icons.link),
           onPressed: () async {
-            if (simulationInput.value != null) {
-              if (await canLaunch(simulationInput.value)) {
-                await launch(simulationInput.value);
+            if (input != null) {
+              if (await canLaunch(input.value)) {
+                await launch(input.value);
               }
             }
           },
@@ -332,15 +170,15 @@ class _TaskEditDSState extends State<TaskEditDS> {
       }
       itemList.add(Row(
         children: [
-          Text('${simulationInput.name}'),
-          Text(' = '),
-          simulationInput.type == 'texto' || simulationInput.type == 'url'
-              ? Text('(${simulationInput.value.length}c)')
-              : Text('${simulationInput.value}'),
+          icone,
           Container(
             width: 10,
           ),
-          icone,
+          Text('${input.name}'),
+          Text(' = '),
+          input.type == 'url'
+              ? Text('(${input.value.length}c)')
+              : Text('${input.value}'),
         ],
       ));
     }
@@ -348,92 +186,124 @@ class _TaskEditDSState extends State<TaskEditDS> {
   }
 
   List<Widget> simulationOutputBuilder(
-      BuildContext context, List<Output> simulationOutputList) {
+      BuildContext context, Map<String, Output> simulationOutputMap) {
     List<Widget> itemList = [];
-    for (Output simulationOutput in simulationOutputList) {
+    List<Output> outputList = simulationOutputMap.values.toList();
+    outputList.sort((a, b) => a.name.compareTo(b.name));
+
+    for (var output in outputList) {
       Widget icone = Icon(Icons.question_answer);
-      if (simulationOutput.type == 'numero') {
+
+      if (output.type == 'numero') {
         icone = Icon(Icons.looks_one);
-      } else if (simulationOutput.type == 'palavra') {
+      } else if (output.type == 'palavra') {
         icone = Icon(Icons.text_format);
-      } else if (simulationOutput.type == 'texto') {
-        icone = IconButton(
-          tooltip: 'ver textos desta tarefa',
-          icon: Icon(Icons.text_fields),
-          onPressed: () {
-            widget.onSeeTextTask();
-          },
+      } else if (output.type == 'texto') {
+        icone = Icon(Icons.text_fields);
+      } else if (output.type == 'url') {
+        icone = Icon(Icons.link);
+      } else if (output.type == 'arquivo') {
+        icone = Icon(Icons.description);
+      }
+      if (output.type == 'numero') {
+        itemList.add(
+          Row(
+            children: [
+              icone,
+              Container(
+                width: 10,
+              ),
+              Expanded(
+                child: TextFormField(
+                  initialValue: output.answer == null ? '0' : output.answer,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    labelText: '${output.name}:: [${output.type}]',
+                  ),
+                  onChanged: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                  onSaved: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                ),
+              ),
+            ],
+          ),
         );
-      } else if (simulationOutput.type == 'url' ||
-          simulationOutput.type == 'urlimagem') {
-        icone = IconButton(
-          tooltip: 'Um link ou URL ao um site ou arquivo',
-          icon: Icon(Icons.link),
-          onPressed: () async {
-            if (simulationOutput.value != null) {
-              if (await canLaunch(simulationOutput.value)) {
-                await launch(simulationOutput.value);
-              }
-            }
-          },
+      } else if (output.type == 'palavra') {
+        itemList.add(
+          Row(
+            children: [
+              icone,
+              Container(
+                width: 10,
+              ),
+              Expanded(
+                child: TextFormField(
+                  initialValue: output.answer == null ? '...' : output.answer,
+                  decoration: InputDecoration(
+                    labelText: '${output.name}: [${output.type}]',
+                  ),
+                  onChanged: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                  onSaved: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                ),
+              ),
+            ],
+          ),
         );
-      } else if (simulationOutput.type == 'arquivo' ||
-          simulationOutput.type == 'imagem') {
-        icone = IconButton(
-          tooltip: 'Upload de arquivo ou imagem',
-          icon: Icon(Icons.description),
-          onPressed: () async {
-            if (simulationOutput.value != null) {
-              if (await canLaunch(simulationOutput.value)) {
-                await launch(simulationOutput.value);
-              }
-            }
-          },
+      } else if (output.type == 'texto') {
+        itemList.add(
+          Row(
+            children: [
+              icone,
+              Container(
+                width: 10,
+              ),
+              Expanded(
+                child: TextFormField(
+                  initialValue: output.answer == null ? '...' : output.answer,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    labelText: '${output.name}: [${output.type}]',
+                  ),
+                  onChanged: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                  onSaved: (newValue) =>
+                      _simulationOutput[output.id].answer = newValue,
+                ),
+              ),
+            ],
+          ),
+        );
+      } else if (output.type == 'url') {
+        itemList.add(
+          Row(
+            children: [
+              icone,
+              Container(
+                width: 10,
+              ),
+              Expanded(
+                  child: TextFormField(
+                initialValue: output.answer == null ? '...' : output.answer,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: InputDecoration(
+                  labelText: '${output.name}: [${output.type}]',
+                ),
+                onChanged: (newValue) =>
+                    _simulationOutput[output.id].answer = newValue,
+                onSaved: (newValue) =>
+                    _simulationOutput[output.id].answer = newValue,
+              )),
+            ],
+          ),
         );
       }
-      itemList.add(Row(
-        children: [
-          Text('${simulationOutput.name}'),
-          Text(' = '),
-          simulationOutput.type == 'texto' || simulationOutput.type == 'url'
-              ? Text('(${simulationOutput.value.length}c)')
-              : Text('${simulationOutput.value}'),
-          Container(
-            width: 10,
-          ),
-          icone,
-          IconButton(
-            color: simulationOutput?.right != null
-                ? simulationOutput.right ? Colors.green : Colors.red
-                : Colors.black,
-            icon: simulationOutput?.right != null
-                ? simulationOutput.right
-                    ? Icon(Icons.thumb_up)
-                    : Icon(Icons.thumb_down)
-                : Icon(
-                    Icons.thumbs_up_down,
-                    color: Colors.yellow,
-                  ),
-            // icon: Icon(Icons.thumb_up),
-            onPressed: () {
-              bool _right;
-              _right = simulationOutput?.right != null
-                  ? simulationOutput.right ? true : false
-                  : false;
-              widget.onUpdateOutput(simulationOutput.id, !_right);
-            },
-          ),
-          // IconButton(
-          //   color: simulationOutput?.right != null
-          //       ? simulationOutput.right ? Colors.green : Colors.red
-          //       : Colors.black,
-          //   icon: Icon(Icons.thumb_down),
-          //   onPressed: () {
-          //     widget.onUpdateOutput(simulationOutput.id, false);
-          //   },
-          // ),
-        ],
-      ));
     }
     return itemList;
   }

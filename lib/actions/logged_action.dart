@@ -232,7 +232,7 @@ class GetDocsUserModelAsyncLoggedAction extends ReduxAction<AppState> {
 
     if (docSnap.exists) {
       if (!docSnap.data['isTeacher']) {
-        print('É aluno liberar acesso.');
+        print('É estudante liberar acesso.');
         dispatch(CurrentUserModelSyncLoggedAction(
             userModel: UserModel(docSnap.documentID).fromMap(docSnap.data)));
         store.dispatch(AuthenticationStatusSyncLoggedAction(

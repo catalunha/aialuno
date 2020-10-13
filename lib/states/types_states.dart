@@ -20,40 +20,40 @@ extension UserOrderExtension on UserOrder {
 //--- UserOrder
 
 enum ClassroomFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum ClassroomOrder {
   name,
 }
 
 enum StudentFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum StudentOrder {
   name,
 }
 
 enum SituationFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum SituationOrder {
   name,
 }
 
 enum KnowFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum KnowOrder {
   name,
 }
 
 enum SimulationFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum SimulationOrder {
   name,
@@ -78,15 +78,15 @@ enum SimulationOrder {
 // }
 
 enum ExameFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum ExameOrder {
   name,
 }
 enum QuestionFilter {
-  isactive,
-  isNotactive,
+  isActive,
+  isNotActive,
 }
 enum QuestionOrder {
   name,
@@ -94,6 +94,7 @@ enum QuestionOrder {
 enum TaskFilter {
   isActive,
   isNotActive,
+  isActiveByClassroomActive,
 }
 enum TaskOrder {
   name,

@@ -1,26 +1,26 @@
 import 'package:aialuno/models/task_model.dart';
 import 'package:flutter/material.dart';
 
-class TaskListDS extends StatefulWidget {
+class TaskListOpenDS extends StatefulWidget {
   final List<TaskModel> taskList;
   final Function(String) onEditTaskCurrent;
 
-  const TaskListDS({
+  const TaskListOpenDS({
     Key key,
     this.taskList,
     this.onEditTaskCurrent,
   }) : super(key: key);
 
   @override
-  _TaskListDSState createState() => _TaskListDSState();
+  _TaskListOpenDSState createState() => _TaskListOpenDSState();
 }
 
-class _TaskListDSState extends State<TaskListDS> {
+class _TaskListOpenDSState extends State<TaskListOpenDS> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tarefas (${widget.taskList.length})'),
+        title: Text('Tarefas Open (${widget.taskList.length})'),
         actions: [
           // LogoutButton(),
         ],
@@ -39,13 +39,13 @@ class _TaskListDSState extends State<TaskListDS> {
                     selected: task?.isOpen != null ? task.isOpen : false,
                     title: Text('${task.id.substring(0, 4)}'),
                     subtitle: Text('${task.toString()}'),
-                    // trailing: IconButton(
-                    //   tooltip: 'Editar esta tarefa',
-                    //   icon: Icon(Icons.edit),
-                    //   onPressed: () async {
-                    //     widget.onEditTaskCurrent(task.id);
-                    //   },
-                    // ),
+                    trailing: IconButton(
+                      tooltip: 'Editar esta tarefa',
+                      icon: Icon(Icons.edit),
+                      onPressed: () async {
+                        widget.onEditTaskCurrent(task.id);
+                      },
+                    ),
                   ),
                 ),
               ],

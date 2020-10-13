@@ -1,5 +1,8 @@
 import 'package:aialuno/actions/task_action.dart';
+import 'package:aialuno/models/exame_model.dart';
+import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
+import 'package:aialuno/models/situation_model.dart';
 import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/task/task_edit_ds.dart';
 import 'package:flutter/material.dart';
@@ -17,17 +20,19 @@ class ViewModel extends BaseModel<AppState> {
   int time;
   int error;
   int scoreQuestion;
-  // gestão da tarefa
-  int attempted;
-  bool isOpen;
+  // dados para atualização
+  dynamic started;
+  dynamic lastSendAnswer;
+  dynamic attempted;
+  //Referencias
+  ExameModel exameRef;
+  QuestionModel questionRef;
+  SituationModel situationRef;
+  //input e output
+  Map<String, Input> simulationInput;
+  Map<String, Output> simulationOutput;
 
-  List<Input> simulationInput;
-  List<Output> simulationOutput;
-
-  Function(dynamic, dynamic, int, int, int, int, int, bool, int, bool, bool)
-      onUpdateTask;
-  Function(String, bool) onUpdateOutput;
-  Function() onSeeTextTask;
+  Function(Map<String, Output>) onUpdateSimulationOutput;
 
   ViewModel();
   ViewModel.build({
@@ -39,13 +44,15 @@ class ViewModel extends BaseModel<AppState> {
     @required this.time,
     @required this.error,
     @required this.scoreQuestion,
+    @required this.started,
+    @required this.lastSendAnswer,
     @required this.attempted,
-    @required this.isOpen,
+    @required this.exameRef,
+    @required this.questionRef,
+    @required this.situationRef,
     @required this.simulationInput,
     @required this.simulationOutput,
-    @required this.onUpdateTask,
-    @required this.onUpdateOutput,
-    @required this.onSeeTextTask,
+    @required this.onUpdateSimulationOutput,
   }) : super(equals: [
           id,
           start,
@@ -55,32 +62,15 @@ class ViewModel extends BaseModel<AppState> {
           time,
           error,
           scoreQuestion,
+          started,
+          lastSendAnswer,
           attempted,
-          isOpen,
+          exameRef,
+          questionRef,
+          situationRef,
           simulationInput,
           simulationOutput,
         ]);
-  List<Input> _simulationInput(Map<String, Input> simulationInput) {
-    List<Input> _simulationInput = [];
-    if (simulationInput != null) {
-      for (var item in simulationInput.entries) {
-        _simulationInput.add(Input(item.key).fromMap(item.value.toMap()));
-      }
-      _simulationInput.sort((a, b) => a.name.compareTo(b.name));
-    }
-    return _simulationInput;
-  }
-
-  List<Output> _simulationOutput(Map<String, Output> simulationOutput) {
-    List<Output> _simulationOutput = [];
-    if (simulationOutput != null) {
-      for (var item in simulationOutput.entries) {
-        _simulationOutput.add(Output(item.key).fromMap(item.value.toMap()));
-      }
-      _simulationOutput.sort((a, b) => a.name.compareTo(b.name));
-    }
-    return _simulationOutput;
-  }
 
   @override
   ViewModel fromStore() => ViewModel.build(
@@ -92,43 +82,18 @@ class ViewModel extends BaseModel<AppState> {
         time: state.taskState.taskCurrent.time,
         error: state.taskState.taskCurrent.error,
         scoreQuestion: state.taskState.taskCurrent.scoreQuestion,
+        started: state.taskState.taskCurrent.started,
+        lastSendAnswer: state.taskState.taskCurrent.lastSendAnswer,
         attempted: state.taskState.taskCurrent.attempted,
-        isOpen: state.taskState.taskCurrent.isOpen,
-        simulationInput:
-            _simulationInput(state.taskState.taskCurrent.simulationInput),
-        simulationOutput:
-            _simulationOutput(state.taskState.taskCurrent.simulationOutput),
-        onUpdateTask: (
-          dynamic start,
-          dynamic end,
-          int scoreExame,
-          int attempt,
-          int time,
-          int error,
-          int scoreQuestion,
-          bool nullStarted,
-          int attempted,
-          bool isOpen,
-          bool isDelete,
-        ) {
-          dispatch(UpdateDocTaskCurrentAsyncTaskAction(
-            start: start,
-            end: end,
-            scoreExame: scoreExame,
-            attempt: attempt,
-            time: time,
-            error: error,
-            scoreQuestion: scoreQuestion,
-            nullStarted: nullStarted,
-            attempted: attempted,
-            isOpen: isOpen,
-            isDelete: isDelete,
-          ));
+        exameRef: state.taskState.taskCurrent.exameRef,
+        questionRef: state.taskState.taskCurrent.questionRef,
+        situationRef: state.taskState.taskCurrent.situationRef,
+        simulationInput: state.taskState.taskCurrent.simulationInput,
+        simulationOutput: state.taskState.taskCurrent.simulationOutput,
+        onUpdateSimulationOutput: (Map<String, Output> _simulationOutput) {
+          dispatch(
+              UpdateOutputAsyncTaskAction(simulationOutput: _simulationOutput));
           dispatch(NavigateAction.pop());
-        },
-        onUpdateOutput: (String id, bool isTruOrFalse) {
-          dispatch(UpdateOutputAsyncTaskAction(
-              taskSimulationOutputId: id, isTruOrFalse: isTruOrFalse));
         },
       );
 }
@@ -148,13 +113,15 @@ class TaskEdit extends StatelessWidget {
         time: viewModel.time,
         error: viewModel.error,
         scoreQuestion: viewModel.scoreQuestion,
+        started: viewModel.started,
+        lastSendAnswer: viewModel.lastSendAnswer,
         attempted: viewModel.attempted,
+        exameRef: viewModel.exameRef,
+        questionRef: viewModel.questionRef,
+        situationRef: viewModel.situationRef,
         simulationInput: viewModel.simulationInput,
         simulationOutput: viewModel.simulationOutput,
-        isOpen: viewModel.isOpen,
-        onUpdateTask: viewModel.onUpdateTask,
-        onUpdateOutput: viewModel.onUpdateOutput,
-        onSeeTextTask: viewModel.onSeeTextTask,
+        onUpdateSimulationOutput: viewModel.onUpdateSimulationOutput,
       ),
     );
   }

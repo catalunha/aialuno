@@ -1,4 +1,6 @@
+import 'package:aialuno/states/classroom_state.dart';
 import 'package:aialuno/states/logged_state.dart';
+import 'package:aialuno/states/student_state.dart';
 import 'package:aialuno/states/task_state.dart';
 import 'package:aialuno/states/user_state.dart';
 import 'package:async_redux/async_redux.dart';
@@ -7,8 +9,8 @@ class AppState {
   final Wait wait;
   final LoggedState loggedState;
   final UserState userState;
-  // final ClassroomState classroomState;
-  // final StudentState studentState;
+  final ClassroomState classroomState;
+  final StudentState studentState;
   // final SituationState situationState;
   // final KnowState knowState;
   // final SimulationState simulationState;
@@ -20,8 +22,8 @@ class AppState {
     this.wait,
     this.loggedState,
     this.userState,
-    // this.classroomState,
-    // this.studentState,
+    this.classroomState,
+    this.studentState,
     // this.situationState,
     // this.knowState,
     // this.simulationState,
@@ -34,8 +36,8 @@ class AppState {
         wait: Wait(),
         loggedState: LoggedState.initialState(),
         userState: UserState.initialState(),
-        // classroomState: ClassroomState.initialState(),
-        // studentState: StudentState.initialState(),
+        classroomState: ClassroomState.initialState(),
+        studentState: StudentState.initialState(),
         // situationState: SituationState.initialState(),
         // knowState: KnowState.initialState(),
         // simulationState: SimulationState.initialState(),
@@ -47,8 +49,8 @@ class AppState {
     Wait wait,
     LoggedState loggedState,
     UserState userState,
-    // ClassroomState classroomState,
-    // StudentState studentState,
+    ClassroomState classroomState,
+    StudentState studentState,
     // SituationState situationState,
     // KnowState knowState,
     // SimulationState simulationState,
@@ -60,8 +62,8 @@ class AppState {
         wait: wait ?? this.wait,
         loggedState: loggedState ?? this.loggedState,
         userState: userState ?? this.userState,
-        // classroomState: classroomState ?? this.classroomState,
-        // studentState: studentState ?? this.studentState,
+        classroomState: classroomState ?? this.classroomState,
+        studentState: studentState ?? this.studentState,
         // situationState: situationState ?? this.situationState,
         // knowState: knowState ?? this.knowState,
         // simulationState: simulationState ?? this.simulationState,
@@ -77,8 +79,8 @@ class AppState {
       // simulationState.hashCode ^
       // knowState.hashCode ^
       // situationState.hashCode ^
-      // studentState.hashCode ^
-      // classroomState.hashCode ^
+      studentState.hashCode ^
+      classroomState.hashCode ^
       loggedState.hashCode ^
       userState.hashCode ^
       wait.hashCode;
@@ -92,8 +94,8 @@ class AppState {
           // exameState == other.exameState &&
           // knowState == other.knowState &&
           // situationState == other.situationState &&
-          // studentState == other.studentState &&
-          // classroomState == other.classroomState &&
+          studentState == other.studentState &&
+          classroomState == other.classroomState &&
           userState == other.userState &&
           loggedState == other.loggedState &&
           wait == other.wait &&
