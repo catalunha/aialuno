@@ -24,7 +24,7 @@ class ViewModel extends BaseModel<AppState> {
         taskList: state.taskState.taskList,
         onEditTaskCurrent: (String id) {
           dispatch(SetTaskCurrentSyncTaskAction(id));
-          dispatch(NavigateAction.pushNamed(Routes.taskEdit));
+          // dispatch(NavigateAction.pushNamed(Routes.taskEdit));
         },
       );
 }

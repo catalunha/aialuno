@@ -2,13 +2,17 @@ import 'package:aialuno/models/exame_model.dart';
 import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
 import 'package:aialuno/models/situation_model.dart';
+import 'package:aialuno/uis/components/clock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TaskEditDS extends StatefulWidget {
+  final bool isDataValid;
   final String id;
+  //dados da tarefa
+  final dynamic tempoPResponder;
   //dados do exame
   final dynamic start;
   final dynamic end;
@@ -52,6 +56,8 @@ class TaskEditDS extends StatefulWidget {
     this.start,
     this.scoreExame,
     this.scoreQuestion,
+    this.isDataValid,
+    this.tempoPResponder,
   }) : super(key: key);
   @override
   _TaskEditDSState createState() => _TaskEditDSState();
@@ -81,8 +87,24 @@ class _TaskEditDSState extends State<TaskEditDS> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Editar esta tarefa ${widget.id.substring(0, 4)}'),
+        title: Text('Resolvendo ${widget.id.substring(0, 4)}'),
         actions: [
+          Container(
+            width: 70.0,
+            padding: EdgeInsets.only(top: 3.0, right: 4.0),
+            child: CountDownTimer(
+              secondsRemaining: widget.tempoPResponder.inSeconds,
+              whenTimeExpires: () {
+                Navigator.pop(context);
+                // print('terminou clock');
+              },
+              countDownTimerStyle: TextStyle(
+                color: Colors.red,
+                fontSize: 16.0,
+                // height: 2,
+              ),
+            ),
+          ),
           IconButton(
             tooltip: 'Link para a proposta da tarefa',
             icon: Icon(Icons.link),
@@ -98,7 +120,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
       ),
       body: Padding(
         padding: EdgeInsets.all(8),
-        child: form(),
+        child: widget.isDataValid ? form() : taskClosed(),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.cloud_upload),
@@ -107,6 +129,10 @@ class _TaskEditDSState extends State<TaskEditDS> {
         },
       ),
     );
+  }
+
+  Widget taskClosed() {
+    return Text('Tarefa fechou por limite de tentativas ou tempo.');
   }
 
   Widget form() {

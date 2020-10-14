@@ -193,6 +193,9 @@ class TaskModel extends FirestoreModel {
     _return = _return + '\nTempo de resolução: $time h. Erro relativo: $error%';
     // _return = _return + '\nerror: $error';
     _return = _return + '\nAberta: $isOpen';
+    _return = _return + '\nupdateIsOpen: $updateIsOpen';
+    _return = _return + '\nresponderAte: $responderAte';
+    _return = _return + '\ntempoPResponder: $tempoPResponder';
 
     _return = _return + '\n ** Entrada: ${simulationInput.length} ** ';
     // List<Input> _inputList = [];
@@ -240,19 +243,19 @@ class TaskModel extends FirestoreModel {
             '\n${item.name}=${item?.answer == null ? "?" : item.answer} [${item.type}=${item?.answer == null ? "?" : item.answer.length}c] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
       } else {
         _return = _return +
-            '\n${item.name}=${item?.answer == null ? "?" : item.answer} [${item.type}] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
+            '\n${item.name}=${item?.answer == null ? "?" : item.answer} [${item.type}] ${item?.right != null ? item.right ? "Confere" : "Não confere" : "Não corrigido"}';
       }
     }
     return _return;
   }
 
-  bool get _isOpen {
+  bool get updateIsOpen {
     if (this.isOpen && this.end.isBefore(DateTime.now())) {
       this.isOpen = false;
       // print('==> Tarefa ${this.id}. aberta=${this.aberta} pois fim < now');
     }
     if (this.isOpen &&
-        this.start != null &&
+        this.started != null &&
         this.responderAte != null &&
         this.responderAte.isBefore(DateTime.now())) {
       this.isOpen = false;
@@ -268,8 +271,8 @@ class TaskModel extends FirestoreModel {
   }
 
   DateTime get responderAte {
-    if (this.start != null) {
-      return this.start.add(Duration(hours: this.time));
+    if (this.started != null) {
+      return this.started.add(Duration(hours: this.time));
     } else {
       return null;
     }
@@ -277,7 +280,7 @@ class TaskModel extends FirestoreModel {
 
   dynamic get tempoPResponder {
     responderAte;
-    if (this.start == null) {
+    if (this.started == null) {
       // return Duration(hours: this.tempo);
       return null;
     } else {
@@ -293,6 +296,6 @@ class TaskModel extends FirestoreModel {
   void updateAll() {
     responderAte;
     tempoPResponder;
-    _isOpen;
+    updateIsOpen;
   }
 }

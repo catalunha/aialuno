@@ -3,6 +3,7 @@ import 'package:aialuno/models/exame_model.dart';
 import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
 import 'package:aialuno/models/situation_model.dart';
+import 'package:aialuno/models/task_model.dart';
 import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/task/task_edit_ds.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,10 @@ import 'package:aialuno/states/app_state.dart';
 import 'package:async_redux/async_redux.dart';
 
 class ViewModel extends BaseModel<AppState> {
+  bool isDataValid;
   String id;
+  //dados da tarefa
+  dynamic tempoPResponder;
   //dados do exame
   dynamic start;
   dynamic end;
@@ -36,7 +40,9 @@ class ViewModel extends BaseModel<AppState> {
 
   ViewModel();
   ViewModel.build({
+    @required this.isDataValid,
     @required this.id,
+    @required this.tempoPResponder,
     @required this.start,
     @required this.end,
     @required this.scoreExame,
@@ -54,7 +60,9 @@ class ViewModel extends BaseModel<AppState> {
     @required this.simulationOutput,
     @required this.onUpdateSimulationOutput,
   }) : super(equals: [
+          isDataValid,
           id,
+          tempoPResponder,
           start,
           end,
           scoreExame,
@@ -72,9 +80,24 @@ class ViewModel extends BaseModel<AppState> {
           simulationOutput,
         ]);
 
+  bool _isDataValid() {
+    TaskModel taskModel = state.taskState.taskCurrent;
+    bool _return = true;
+    if (taskModel != null && taskModel.isOpen != null && !taskModel.isOpen) {
+      _return = false;
+    }
+
+    if (taskModel?.tempoPResponder?.inSeconds == null) {
+      _return = false;
+    }
+    return _return;
+  }
+
   @override
   ViewModel fromStore() => ViewModel.build(
+        isDataValid: _isDataValid(),
         id: state.taskState.taskCurrent.id,
+        tempoPResponder: state.taskState.taskCurrent.tempoPResponder,
         start: state.taskState.taskCurrent.start,
         end: state.taskState.taskCurrent.end,
         scoreExame: state.taskState.taskCurrent.scoreExame,
@@ -105,7 +128,9 @@ class TaskEdit extends StatelessWidget {
       //debug: this,
       model: ViewModel(),
       builder: (context, viewModel) => TaskEditDS(
+        isDataValid: viewModel.isDataValid,
         id: viewModel.id,
+        tempoPResponder: viewModel.tempoPResponder,
         start: viewModel.start,
         end: viewModel.end,
         scoreExame: viewModel.scoreExame,

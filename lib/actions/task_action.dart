@@ -1,5 +1,6 @@
 import 'package:aialuno/models/simulation_model.dart';
 import 'package:aialuno/models/task_model.dart';
+import 'package:aialuno/routes.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:aialuno/states/types_states.dart';
 import 'package:async_redux/async_redux.dart';
@@ -12,25 +13,25 @@ class SetTaskCurrentSyncTaskAction extends ReduxAction<AppState> {
   SetTaskCurrentSyncTaskAction(this.id);
 
   @override
-  AppState reduce() {
+  Future<AppState> reduce() async {
+    Firestore firestore = Firestore.instance;
     TaskModel taskModel;
 
     TaskModel taskModelTemp =
         state.taskState.taskList.firstWhere((element) => element.id == id);
     taskModel = TaskModel(taskModelTemp.id).fromMap(taskModelTemp.toMap());
 
-    // _state.tarefaModel.modificado = DateTime.now();
-    // _state.tarefaModel.updateAll();
-    // if (_state.tarefaModel.iniciou == null) {
-    //   _state.tarefaModel.iniciou = DateTime.now();
-    //   final docRef = _firestore
-    //       .collection(TarefaModel.collection)
-    //       .document(_state.tarefaModel.id);
-    //   await docRef.setData(
-    //     _state.tarefaModel.toMap(),
-    //     merge: true,
-    //   );
-    // }
+    taskModel.updateAll();
+    if (taskModel.started == null) {
+      taskModel.started = DateTime.now();
+      // taskModel.started = FieldValue.serverTimestamp();
+      final docRef =
+          firestore.collection(TaskModel.collection).document(taskModel.id);
+      await docRef.setData(
+        taskModel.toMap(),
+        merge: true,
+      );
+    }
 
     return state.copyWith(
       taskState: state.taskState.copyWith(
@@ -38,6 +39,8 @@ class SetTaskCurrentSyncTaskAction extends ReduxAction<AppState> {
       ),
     );
   }
+
+  void after() => dispatch(NavigateAction.pushNamed(Routes.taskEdit));
 }
 
 class SetTaskFilterSyncTaskAction extends ReduxAction<AppState> {
@@ -103,9 +106,31 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
   GetDocsTaskListAsyncTaskAction(this.taskList);
 
   @override
-  AppState reduce() {
+  Future<AppState> reduce() async {
+    Firestore firestore = Firestore.instance;
+
     TaskModel taskModel;
     print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
+    for (var task in taskList) {
+      print('::>${task.isOpen}');
+      bool _isOpen = task.isOpen;
+      bool _updateIsOpen = task.updateIsOpen;
+      print('::>${task.isOpen}');
+
+      print(
+          'task1: ${task.id}. task.isOpen:${task.isOpen}. task.updateIsOpen:${task.updateIsOpen}. (task.isOpen != task.updateIsOpen):${(task.isOpen != task.updateIsOpen)}. true != false:${true != false}. _isOpen != _updateIsOpen:${_isOpen != _updateIsOpen}');
+      if ((_isOpen != _updateIsOpen)) {
+        // if (!task.updateIsOpen) {
+        print('task2: ${task.id} ${task.isOpen} ${task.updateIsOpen}');
+        final taskDoc =
+            firestore.collection(TaskModel.collection).document(task.id);
+        await taskDoc.setData(
+          {'isOpen': false},
+          merge: true,
+        );
+        return null;
+      }
+    }
 
     if (state.taskState.taskCurrent != null) {
       int index = taskList.indexWhere(
@@ -242,6 +267,9 @@ class UpdateOutputAsyncTaskAction extends ReduxAction<AppState> {
         data["simulationOutput"][item.key] = item.value.toMap();
       }
     }
+    data['attempted'] = FieldValue.increment(1);
+    data['lastSendAnswer'] = FieldValue.serverTimestamp();
+    data['isOpen'] = taskModel.updateIsOpen;
 
     await firestore
         .collection(TaskModel.collection)
