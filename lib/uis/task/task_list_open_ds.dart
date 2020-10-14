@@ -39,32 +39,54 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                   child: task.tempoPResponder == null
                       ? Text('${task.time}')
                       : ListTile(
-                          leading: Container(
-                            width: 70.0,
-                            padding: EdgeInsets.only(top: 3.0, right: 4.0),
-                            child: CountDownTimer(
-                              secondsRemaining: task.tempoPResponder.inSeconds,
-                              whenTimeExpires: () {
-                                Navigator.pop(context);
-                                // print('terminou clock');
-                              },
-                              countDownTimerStyle: TextStyle(
-                                color: Colors.red,
-                                fontSize: 16.0,
-                                // height: 2,
+                          trailing: Column(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  width: 70.0,
+                                  padding:
+                                      EdgeInsets.only(top: 3.0, right: 4.0),
+                                  child: CountDownTimer(
+                                    secondsRemaining:
+                                        task.tempoPResponder.inSeconds,
+                                    whenTimeExpires: () {
+                                      Navigator.pop(context);
+                                      // print('terminou clock');
+                                    },
+                                    countDownTimerStyle: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 16.0,
+                                      // height: 2,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  width: 50.0,
+                                  child: IconButton(
+                                    tooltip: 'Editar esta tarefa',
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () async {
+                                      widget.onEditTaskCurrent(task.id);
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                           selected: task?.isOpen != null ? task.isOpen : false,
                           title: Text('${task.id.substring(0, 4)}'),
                           subtitle: Text('${task.toString()}'),
-                          trailing: IconButton(
-                            tooltip: 'Editar esta tarefa',
-                            icon: Icon(Icons.edit),
-                            onPressed: () async {
-                              widget.onEditTaskCurrent(task.id);
-                            },
-                          ),
+                          // trailing: IconButton(
+                          //   tooltip: 'Editar esta tarefa',
+                          //   icon: Icon(Icons.edit),
+                          //   onPressed: () async {
+                          //     widget.onEditTaskCurrent(task.id);
+                          //   },
+                          // ),
                         ),
                 ),
               ],

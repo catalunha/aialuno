@@ -5,6 +5,7 @@ import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
 import 'package:aialuno/models/situation_model.dart';
 import 'package:aialuno/models/user_model.dart';
+import 'package:intl/intl.dart';
 
 class TaskModel extends FirestoreModel {
   static final String collection = "task";
@@ -73,6 +74,7 @@ class TaskModel extends FirestoreModel {
     if (map.containsKey('studentUserRef') && map['studentUserRef'] != null)
       studentUserRef =
           UserModel(map['studentUserRef']['id']).fromMap(map['studentUserRef']);
+
     start = map.containsKey('start') && map['start'] != null
         ? DateTime.fromMillisecondsSinceEpoch(
             map['start'].millisecondsSinceEpoch)
@@ -181,16 +183,20 @@ class TaskModel extends FirestoreModel {
         '\nEstudante: ${studentUserRef.name.split(' ')[0]} (${studentUserRef.id.substring(0, 4)})';
     // _return = _return + '\nstudentUserRef.name: ${studentUserRef.name}';
 
-    _return = _return + '\nInício: $start';
-    _return = _return + '\nIniciou: $started';
-    _return = _return + '\nÚltimo envio: $lastSendAnswer';
-    _return = _return + '\nFim: $end';
+    _return = _return +
+        '\nInício: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(start)}';
+    _return = _return +
+        '\nIniciou: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(started)}';
+    _return = _return +
+        '\nÚltimo envio: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(lastSendAnswer)}';
+    _return =
+        _return + '\nFim: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(end)}';
     _return =
         _return + '\nPeso avaliação-tarefa: $scoreExame - $scoreQuestion.';
     // _return = _return + '\nscoreQuestion: $scoreQuestion';
-    _return = _return + ' Tentativa: $attempted de $attempt';
+    _return = _return + ' Tentativa: $attempted de $attempt.';
     // _return = _return + '\nattempted: $attempted';
-    _return = _return + '\nTempo de resolução: $time h. Erro relativo: $error%';
+    _return = _return + ' Tempo de resolução: $time h. Erro relativo: $error%.';
     // _return = _return + '\nerror: $error';
     _return = _return + '\nAberta: $isOpen';
     _return = _return + '\nupdateIsOpen: $updateIsOpen';

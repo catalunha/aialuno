@@ -6,6 +6,7 @@ import 'package:aialuno/uis/components/clock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TaskEditDS extends StatefulWidget {
@@ -89,6 +90,18 @@ class _TaskEditDSState extends State<TaskEditDS> {
       appBar: AppBar(
         title: Text('Resolvendo ${widget.id.substring(0, 4)}'),
         actions: [
+          // IconButton(
+          //   tooltip: 'Link para a proposta da tarefa',
+          //   icon: Text(
+          //     '${widget.attempted}-${widget.attempt}',
+          //     style: TextStyle(
+          //       color: Colors.red,
+          //       fontSize: 16.0,
+          //       // height: 2,
+          //     ),
+          //   ),
+          //   onPressed: null,
+          // ),
           Container(
             width: 70.0,
             padding: EdgeInsets.only(top: 3.0, right: 4.0),
@@ -132,7 +145,21 @@ class _TaskEditDSState extends State<TaskEditDS> {
   }
 
   Widget taskClosed() {
-    return Text('Tarefa fechou por limite de tentativas ou tempo.');
+    return Center(
+      child: Card(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Tarefa fechou por limite de tentativas ou tempo.',
+          style: TextStyle(
+            color: Colors.yellow,
+            fontSize: 22.0,
+            // height: 2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      )),
+    );
   }
 
   Widget form() {
@@ -140,12 +167,47 @@ class _TaskEditDSState extends State<TaskEditDS> {
       key: formKey,
       child: ListView(
         children: [
-          Text('Inicia em: ${widget.start}'),
-          Text('Iniciada em: ${widget.started}'),
-          Text('Último envio: ${widget.lastSendAnswer}'),
-          Text('Finaliza em: ${widget.end}'),
-          Text('Tempo ao iniciar: ${widget.time}h'),
-          Text('Tentativas: ${widget.attempted} de ${widget.attempt}'),
+          Card(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Tentativas:'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${widget.attempted} de ${widget.attempt}',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 16.0,
+                    // height: 2,
+                  ),
+                ),
+              ),
+              Text('Tempo: '),
+              CountDownTimer(
+                secondsRemaining: widget.tempoPResponder.inSeconds,
+                whenTimeExpires: () {
+                  Navigator.pop(context);
+                  // print('terminou clock');
+                },
+                countDownTimerStyle: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16.0,
+                  // height: 2,
+                ),
+              ),
+            ],
+          )),
+
+          Text(
+              'Inicio: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.start)}'),
+          Text(
+              'Iniciada em: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.started)}'),
+          Text(
+              'Último envio: ${widget.lastSendAnswer != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.lastSendAnswer) : ""}'),
+          Text(
+              'Finaliza em: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.end)}'),
+          // Text('Tempo ao iniciar: ${widget.time}h'),
           Text(
               'Peso do exame: ${widget.scoreExame} e da questão: ${widget.scoreQuestion}. '),
           Text(
