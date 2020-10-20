@@ -1,15 +1,22 @@
+import 'package:aialuno/conectors/components/logout_button.dart';
 import 'package:aialuno/models/task_model.dart';
+import 'package:aialuno/models/user_model.dart';
+import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/components/clock.dart';
 import 'package:flutter/material.dart';
 
 class TaskListOpenDS extends StatefulWidget {
+  final UserModel userModel;
   final List<TaskModel> taskList;
   final Function(String) onEditTaskCurrent;
+  final Function(String) onCloseTaskId;
 
   const TaskListOpenDS({
     Key key,
     this.taskList,
     this.onEditTaskCurrent,
+    this.userModel,
+    this.onCloseTaskId,
   }) : super(key: key);
 
   @override
@@ -21,9 +28,15 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tarefas Open (${widget.taskList.length})'),
+        title: Text(
+            'Olá ${widget.userModel?.name?.split(' ')[0]}. ${widget.taskList.length} tarefas.'),
         actions: [
-          // LogoutButton(),
+          IconButton(
+            icon: Icon(Icons.fact_check_outlined),
+            onPressed: () =>
+                Navigator.pushReplacementNamed(context, Routes.classroomList),
+          ),
+          LogoutButton(),
         ],
       ),
       body: ListView.builder(
@@ -36,23 +49,25 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
               children: [
                 Container(
                   width: 500,
-                  child: task.tempoPResponder == null
-                      ? Text('${task.time}')
-                      : ListTile(
-                          trailing: Column(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Container(
+                  child: ListTile(
+                    trailing: Column(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: task.tempoPResponder == null
+                              ? Text('${task.time}h')
+                              : Container(
                                   width: 70.0,
                                   padding:
                                       EdgeInsets.only(top: 3.0, right: 4.0),
                                   child: CountDownTimer(
                                     secondsRemaining:
                                         task.tempoPResponder.inSeconds,
-                                    whenTimeExpires: () {
-                                      Navigator.pop(context);
-                                      // print('terminou clock');
+                                    whenTimeExpires: () async {
+                                      await Future.delayed(
+                                          Duration(seconds: 10));
+                                      widget.onCloseTaskId(task.id);
+                                      print('terminou time ${task.id}');
                                     },
                                     countDownTimerStyle: TextStyle(
                                       color: Colors.red,
@@ -61,33 +76,33 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  width: 50.0,
-                                  child: IconButton(
-                                    tooltip: 'Editar esta tarefa',
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () async {
-                                      widget.onEditTaskCurrent(task.id);
-                                    },
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          selected: task?.isOpen != null ? task.isOpen : false,
-                          title: Text('${task.id.substring(0, 4)}'),
-                          subtitle: Text('${task.toString()}'),
-                          // trailing: IconButton(
-                          //   tooltip: 'Editar esta tarefa',
-                          //   icon: Icon(Icons.edit),
-                          //   onPressed: () async {
-                          //     widget.onEditTaskCurrent(task.id);
-                          //   },
-                          // ),
                         ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            width: 50.0,
+                            child: IconButton(
+                              tooltip: 'Editar esta tarefa',
+                              icon: Icon(Icons.edit),
+                              onPressed: () async {
+                                widget.onEditTaskCurrent(task.id);
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    selected: task?.isOpen != null ? task.isOpen : false,
+                    title: Text('Tarefa: ${task.id.substring(0, 4)}'),
+                    subtitle: Text('${task.toString()}'),
+                    // trailing: IconButton(
+                    //   tooltip: 'Editar esta tarefa',
+                    //   icon: Icon(Icons.edit),
+                    //   onPressed: () async {
+                    //     widget.onEditTaskCurrent(task.id);
+                    //   },
+                    // ),
+                  ),
                 ),
               ],
             ),

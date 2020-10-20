@@ -39,11 +39,16 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
         title: Text('Turmas (${widget.classroomList.length})'),
         actions: [
           // IconButton(
-          //   icon: Icon(Icons.line_style),
-          //   // onPressed: () => Navigator.pushNamed(context, Routes.knowList),
+          //   icon: Icon(Icons.fact_check_outlined),
+          //   onPressed: () =>
+          //       Navigator.pushReplacementNamed(context, Routes.taskListOpen),
           // ),
-          // LogoutButton(),
         ],
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_return_sharp),
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, Routes.taskListOpen),
+        ),
       ),
       body: Column(
         children: [

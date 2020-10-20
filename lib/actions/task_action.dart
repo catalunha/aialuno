@@ -14,6 +14,7 @@ class SetTaskCurrentSyncTaskAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState> reduce() async {
+    print('SetTaskCurrentSyncTaskAction');
     Firestore firestore = Firestore.instance;
     TaskModel taskModel;
 
@@ -53,6 +54,7 @@ class SetTaskFilterSyncTaskAction extends ReduxAction<AppState> {
     return state.copyWith(
       taskState: state.taskState.copyWith(
         taskFilter: taskFilter,
+        // taskList: <TaskModel>[],
       ),
     );
   }
@@ -112,16 +114,10 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     TaskModel taskModel;
     print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
     for (var task in taskList) {
-      print('::>${task.isOpen}');
       bool _isOpen = task.isOpen;
       bool _updateIsOpen = task.updateIsOpen;
-      print('::>${task.isOpen}');
-
-      print(
-          'task1: ${task.id}. task.isOpen:${task.isOpen}. task.updateIsOpen:${task.updateIsOpen}. (task.isOpen != task.updateIsOpen):${(task.isOpen != task.updateIsOpen)}. true != false:${true != false}. _isOpen != _updateIsOpen:${_isOpen != _updateIsOpen}');
+      print('_isOpen: $_isOpen. _updateIsOpen:$_updateIsOpen');
       if ((_isOpen != _updateIsOpen)) {
-        // if (!task.updateIsOpen) {
-        print('task2: ${task.id} ${task.isOpen} ${task.updateIsOpen}');
         final taskDoc =
             firestore.collection(TaskModel.collection).document(task.id);
         await taskDoc.setData(
@@ -149,6 +145,51 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
         taskCurrent: taskModel,
       ),
     );
+  }
+}
+
+class CloseTaskAsyncTaskAction extends ReduxAction<AppState> {
+  final String closeTaskId;
+  CloseTaskAsyncTaskAction(this.closeTaskId);
+
+  @override
+  Future<AppState> reduce() async {
+    print('CloseTaskAsyncTaskAction: $closeTaskId');
+    Firestore firestore = Firestore.instance;
+    TaskModel taskModel;
+
+    TaskModel taskModelTemp = state.taskState.taskList
+        .firstWhere((element) => element.id == closeTaskId);
+    taskModel = TaskModel(taskModelTemp.id).fromMap(taskModelTemp.toMap());
+
+    bool _isOpen = taskModel.isOpen;
+    bool _updateIsOpen = taskModel.updateIsOpen;
+    print('::>${DateTime.now()}');
+
+    print('_isOpen: $_isOpen. _updateIsOpen:$_updateIsOpen');
+    if ((_isOpen != _updateIsOpen)) {
+      final taskDoc =
+          firestore.collection(TaskModel.collection).document(taskModel.id);
+      await taskDoc.setData(
+        {'isOpen': false},
+        merge: true,
+      );
+      return null;
+    }
+
+    // taskModel.updateAll();
+    // // if (taskModel.started == null) {
+    // // taskModel.started = DateTime.now();
+    // // taskModel.started = FieldValue.serverTimestamp();
+    // final docRef =
+    //     firestore.collection(TaskModel.collection).document(taskModel.id);
+    // await docRef.setData(
+    //   taskModel.toMap(),
+    //   merge: true,
+    // );
+    // // }
+
+    return null;
   }
 }
 

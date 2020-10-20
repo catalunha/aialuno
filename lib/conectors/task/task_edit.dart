@@ -37,7 +37,7 @@ class ViewModel extends BaseModel<AppState> {
   Map<String, Output> simulationOutput;
 
   Function(Map<String, Output>) onUpdateSimulationOutput;
-
+  Function(String) onCloseTaskId;
   ViewModel();
   ViewModel.build({
     @required this.isDataValid,
@@ -59,6 +59,7 @@ class ViewModel extends BaseModel<AppState> {
     @required this.simulationInput,
     @required this.simulationOutput,
     @required this.onUpdateSimulationOutput,
+    @required this.onCloseTaskId,
   }) : super(equals: [
           isDataValid,
           id,
@@ -90,6 +91,7 @@ class ViewModel extends BaseModel<AppState> {
     if (taskModel?.tempoPResponder?.inSeconds == null) {
       _return = false;
     }
+
     return _return;
   }
 
@@ -117,6 +119,10 @@ class ViewModel extends BaseModel<AppState> {
           dispatch(
               UpdateOutputAsyncTaskAction(simulationOutput: _simulationOutput));
           dispatch(NavigateAction.pop());
+        },
+        onCloseTaskId: (String closeTaskId) {
+          // dispatch(NavigateAction.pop());
+          dispatch(CloseTaskAsyncTaskAction(closeTaskId));
         },
       );
 }
@@ -147,6 +153,7 @@ class TaskEdit extends StatelessWidget {
         simulationInput: viewModel.simulationInput,
         simulationOutput: viewModel.simulationOutput,
         onUpdateSimulationOutput: viewModel.onUpdateSimulationOutput,
+        onCloseTaskId: viewModel.onCloseTaskId,
       ),
     );
   }

@@ -184,26 +184,26 @@ class TaskModel extends FirestoreModel {
     // _return = _return + '\nstudentUserRef.name: ${studentUserRef.name}';
 
     _return = _return +
-        '\nInício: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(start)}';
+        '\nInício: ${start != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(start) : ""}';
     _return = _return +
-        '\nIniciou: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(started)}';
+        '\nIniciou: ${started != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(started) : ""}';
     _return = _return +
-        '\nÚltimo envio: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(lastSendAnswer)}';
+        '\nÚltimo envio: ${lastSendAnswer != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(lastSendAnswer) : ""}';
+    _return = _return +
+        '\nFim: ${end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(end) : ""}';
     _return =
-        _return + '\nFim: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(end)}';
-    _return =
-        _return + '\nPeso avaliação-tarefa: $scoreExame - $scoreQuestion.';
+        _return + '\nPeso do exame: $scoreExame. E da questão: $scoreQuestion.';
     // _return = _return + '\nscoreQuestion: $scoreQuestion';
     _return = _return + ' Tentativa: $attempted de $attempt.';
     // _return = _return + '\nattempted: $attempted';
     _return = _return + ' Tempo de resolução: $time h. Erro relativo: $error%.';
     // _return = _return + '\nerror: $error';
-    _return = _return + '\nAberta: $isOpen';
-    _return = _return + '\nupdateIsOpen: $updateIsOpen';
-    _return = _return + '\nresponderAte: $responderAte';
-    _return = _return + '\ntempoPResponder: $tempoPResponder';
+    _return = _return + '\nAberta: ${isOpen ? "Sim" : "Não"}';
+    // _return = _return + '\nupdateIsOpen: $updateIsOpen';
+    // _return = _return + '\nresponderAte: $responderAte';
+    // _return = _return + '\ntempoPResponder: $tempoPResponder';
 
-    _return = _return + '\n ** Entrada: ${simulationInput.length} ** ';
+    _return = _return + '\n ** Entrada: ${simulationInput?.length} ** ';
     // List<Input> _inputList = [];
     // if (simulationInput != null) {
     //   for (var item in simulationInput.entries) {
@@ -235,7 +235,7 @@ class TaskModel extends FirestoreModel {
     //         '\n${item.name}=${item.value} [${item.type}] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
     //   }
     // }
-    _return = _return + '\n ** Saída: ${simulationOutput.length} ** ';
+    _return = _return + '\n ** Saída: ${simulationOutput?.length} ** ';
     List<Output> _outputList = [];
     if (simulationOutput != null) {
       for (var item in simulationOutput.entries) {
@@ -256,27 +256,29 @@ class TaskModel extends FirestoreModel {
   }
 
   bool get updateIsOpen {
+    print('updateIsOpen...');
     if (this.isOpen && this.end.isBefore(DateTime.now())) {
       this.isOpen = false;
-      // print('==> Tarefa ${this.id}. aberta=${this.aberta} pois fim < now');
+      print('==> Tarefa ${this.id}. aberta=${this.isOpen} pois fim < now');
     }
     if (this.isOpen &&
         this.started != null &&
         this.responderAte != null &&
         this.responderAte.isBefore(DateTime.now())) {
       this.isOpen = false;
-      // print('==> Tarefa ${this.id} Fechada pois responderAte < now');
+      print('==> Tarefa ${this.id} Fechada pois responderAte < now');
     }
     if (this.isOpen &&
         this.attempted != null &&
         this.attempted >= this.attempt) {
       this.isOpen = false;
-      // print('==> Tarefa ${this.id} Fechada pois tentou < tentativa');
+      print('==> Tarefa ${this.id} Fechada pois tentou < tentativa');
     }
     return this.isOpen;
   }
 
   DateTime get responderAte {
+    print('responderAte...');
     if (this.started != null) {
       return this.started.add(Duration(hours: this.time));
     } else {
@@ -285,6 +287,7 @@ class TaskModel extends FirestoreModel {
   }
 
   dynamic get tempoPResponder {
+    print('tempoPResponder...');
     responderAte;
     if (this.started == null) {
       // return Duration(hours: this.tempo);

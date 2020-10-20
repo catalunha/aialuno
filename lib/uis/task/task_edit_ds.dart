@@ -37,6 +37,7 @@ class TaskEditDS extends StatefulWidget {
 
   //
   final Function(Map<String, Output>) onUpdateSimulationOutput;
+  final Function(String) onCloseTaskId;
 
   const TaskEditDS({
     Key key,
@@ -59,6 +60,7 @@ class TaskEditDS extends StatefulWidget {
     this.scoreQuestion,
     this.isDataValid,
     this.tempoPResponder,
+    this.onCloseTaskId,
   }) : super(key: key);
   @override
   _TaskEditDSState createState() => _TaskEditDSState();
@@ -137,9 +139,11 @@ class _TaskEditDSState extends State<TaskEditDS> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.cloud_upload),
-        onPressed: () {
-          validateData();
-        },
+        onPressed: widget.isDataValid
+            ? () {
+                validateData();
+              }
+            : null,
       ),
     );
   }
@@ -187,7 +191,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
               CountDownTimer(
                 secondsRemaining: widget.tempoPResponder.inSeconds,
                 whenTimeExpires: () {
-                  Navigator.pop(context);
+                  widget.onCloseTaskId(widget.id);
                   // print('terminou clock');
                 },
                 countDownTimerStyle: TextStyle(
@@ -200,16 +204,16 @@ class _TaskEditDSState extends State<TaskEditDS> {
           )),
 
           Text(
-              'Inicio: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.start)}'),
+              'Inicio: ${widget.start != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.start) : ""}'),
           Text(
-              'Iniciada em: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.started)}'),
+              'Iniciada em: ${widget.started != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.started) : ""}'),
           Text(
               'Último envio: ${widget.lastSendAnswer != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.lastSendAnswer) : ""}'),
           Text(
-              'Finaliza em: ${DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.end)}'),
+              'Finaliza em: ${widget.end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.end) : ""}'),
           // Text('Tempo ao iniciar: ${widget.time}h'),
           Text(
-              'Peso do exame: ${widget.scoreExame} e da questão: ${widget.scoreQuestion}. '),
+              'Peso do exame: ${widget.scoreExame}. E da questão: ${widget.scoreQuestion}. '),
           Text(
               'Exame: ${widget.exameRef.name}. Questão: ${widget.questionRef.name}. Situação: ${widget.situationRef.name}. Link na barra superior.'),
           Row(children: [
