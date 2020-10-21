@@ -293,7 +293,18 @@ class _TaskEditDSState extends State<TaskEditDS> {
       } else if (output.type == 'texto') {
         icone = Icon(Icons.text_fields);
       } else if (output.type == 'url') {
-        icone = Icon(Icons.link);
+        // icone = Icon(Icons.link);
+        icone = IconButton(
+          tooltip: 'Um link ao um site ou arquivo',
+          icon: Icon(Icons.link),
+          onPressed: () async {
+            if (output != null) {
+              if (await canLaunch(output.answer)) {
+                await launch(output.answer);
+              }
+            }
+          },
+        );
       } else if (output.type == 'arquivo') {
         icone = Icon(Icons.description);
       }
@@ -308,7 +319,9 @@ class _TaskEditDSState extends State<TaskEditDS> {
               Expanded(
                 child: TextFormField(
                   initialValue: output.answer == null ? '0' : output.answer,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
+                  ],
                   keyboardType: TextInputType.number,
                   maxLines: null,
                   decoration: InputDecoration(
