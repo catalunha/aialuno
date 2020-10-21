@@ -133,9 +133,14 @@ class _TaskEditDSState extends State<TaskEditDS> {
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8),
-        child: widget.isDataValid ? form() : taskClosed(),
+      body: Center(
+        child: Container(
+          width: 600,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: widget.isDataValid ? form() : taskClosed(),
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.cloud_upload),

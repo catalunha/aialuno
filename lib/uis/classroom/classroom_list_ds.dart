@@ -50,16 +50,21 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
               Navigator.pushReplacementNamed(context, Routes.taskListOpen),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ReorderableListView(
-              scrollDirection: Axis.vertical,
-              children: buildItens(),
-              onReorder: _onReorder,
-            ),
+      body: Center(
+        child: Container(
+          width: 600,
+          child: Column(
+            children: [
+              Expanded(
+                child: ReorderableListView(
+                  scrollDirection: Axis.vertical,
+                  children: buildItens(),
+                  onReorder: _onReorder,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       // body: ListView.builder(
       //   itemCount: widget.classroomList.length,
@@ -151,7 +156,7 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
             alignment: WrapAlignment.spaceEvenly,
             children: [
               Container(
-                width: 500,
+                width: 440,
                 child: ListTile(
                   title: Text('${classroom.name}'),
                   subtitle: Text('${classroom.toString()}'),

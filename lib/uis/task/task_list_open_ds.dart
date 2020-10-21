@@ -39,75 +39,77 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
           LogoutButton(),
         ],
       ),
-      body: ListView.builder(
-        itemCount: widget.taskList.length,
-        itemBuilder: (context, index) {
-          final task = widget.taskList[index];
-          return Card(
-            child: Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: [
-                Container(
-                  width: 500,
-                  child: ListTile(
-                    trailing: Column(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: task.tempoPResponder == null
-                              ? Text('${task.time}h')
-                              : Container(
-                                  width: 70.0,
-                                  padding:
-                                      EdgeInsets.only(top: 3.0, right: 4.0),
-                                  child: CountDownTimer(
-                                    secondsRemaining:
-                                        task.tempoPResponder.inSeconds,
-                                    whenTimeExpires: () async {
-                                      await Future.delayed(
-                                          Duration(seconds: 10));
-                                      widget.onCloseTaskId(task.id);
-                                      print('terminou time ${task.id}');
-                                    },
-                                    countDownTimerStyle: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16.0,
-                                      // height: 2,
+      body: Center(
+        child: Container(
+          width: 600,
+          child: ListView.builder(
+            itemCount: widget.taskList.length,
+            itemBuilder: (context, index) {
+              final task = widget.taskList[index];
+              return Card(
+                child: Wrap(
+                  // alignment: WrapAlignment.spaceEvenly,
+                  children: [
+                    ListTile(
+                      trailing: Column(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: task.tempoPResponder == null
+                                ? Text('${task.time}h')
+                                : Container(
+                                    width: 70.0,
+                                    padding:
+                                        EdgeInsets.only(top: 3.0, right: 4.0),
+                                    child: CountDownTimer(
+                                      secondsRemaining:
+                                          task.tempoPResponder.inSeconds,
+                                      whenTimeExpires: () async {
+                                        await Future.delayed(
+                                            Duration(seconds: 10));
+                                        widget.onCloseTaskId(task.id);
+                                        print('terminou time ${task.id}');
+                                      },
+                                      countDownTimerStyle: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16.0,
+                                        // height: 2,
+                                      ),
                                     ),
                                   ),
-                                ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            width: 50.0,
-                            child: IconButton(
-                              tooltip: 'Editar esta tarefa',
-                              icon: Icon(Icons.edit),
-                              onPressed: () async {
-                                widget.onEditTaskCurrent(task.id);
-                              },
-                            ),
                           ),
-                        )
-                      ],
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              width: 50.0,
+                              child: IconButton(
+                                tooltip: 'Editar esta tarefa',
+                                icon: Icon(Icons.edit),
+                                onPressed: () async {
+                                  widget.onEditTaskCurrent(task.id);
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      selected: task?.isOpen != null ? task.isOpen : false,
+                      title: Text('Tarefa: ${task.id.substring(0, 4)}'),
+                      subtitle: Text('${task.toString()}'),
+                      // trailing: IconButton(
+                      //   tooltip: 'Editar esta tarefa',
+                      //   icon: Icon(Icons.edit),
+                      //   onPressed: () async {
+                      //     widget.onEditTaskCurrent(task.id);
+                      //   },
+                      // ),
                     ),
-                    selected: task?.isOpen != null ? task.isOpen : false,
-                    title: Text('Tarefa: ${task.id.substring(0, 4)}'),
-                    subtitle: Text('${task.toString()}'),
-                    // trailing: IconButton(
-                    //   tooltip: 'Editar esta tarefa',
-                    //   icon: Icon(Icons.edit),
-                    //   onPressed: () async {
-                    //     widget.onEditTaskCurrent(task.id);
-                    //   },
-                    // ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }

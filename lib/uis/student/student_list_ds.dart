@@ -23,17 +23,22 @@ class _StudentListDSState extends State<StudentListDS> {
           // LogoutButton(),
         ],
       ),
-      body: ListView.builder(
-        itemCount: widget.studentList.length,
-        itemBuilder: (context, index) {
-          final student = widget.studentList[index];
-          return Card(
-            child: ListTile(
-              title: Text('${student.name}'),
-              subtitle: Text('${student.toString()}'),
-            ),
-          );
-        },
+      body: Center(
+        child: Container(
+          width: 600,
+          child: ListView.builder(
+            itemCount: widget.studentList.length,
+            itemBuilder: (context, index) {
+              final student = widget.studentList[index];
+              return Card(
+                child: ListTile(
+                  title: Text('${student.name}'),
+                  subtitle: Text('${student.toString()}'),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
