@@ -68,7 +68,8 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                                         await Future.delayed(
                                             Duration(seconds: 10));
                                         widget.onCloseTaskId(task.id);
-                                        print('terminou time ${task.id}');
+                                        print(
+                                            'terminou time em list open da task: ${task.id}');
                                       },
                                       countDownTimerStyle: TextStyle(
                                         color: Colors.red,

@@ -246,7 +246,7 @@ class TaskModel extends FirestoreModel {
     for (var item in _outputList) {
       if (item.type == 'texto' || item.type == 'url') {
         _return = _return +
-            '\n${item.name}=${item?.answer == null ? "?" : item.answer} [${item.type}=${item?.answer == null ? "?" : item.answer.length}c] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
+            '\n${item.name}=... [${item.type}=${item?.answer == null ? "?" : item.answer.length}c] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
       } else {
         _return = _return +
             '\n${item.name}=${item?.answer == null ? "?" : item.answer} [${item.type}] ${item?.right != null ? item.right ? "Confere" : "Não confere" : "Não corrigido"}';

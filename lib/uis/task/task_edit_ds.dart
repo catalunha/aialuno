@@ -111,7 +111,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
               secondsRemaining: widget.tempoPResponder.inSeconds,
               whenTimeExpires: () {
                 Navigator.pop(context);
-                // print('terminou clock');
+                print('terminou clock edit 1');
               },
               countDownTimerStyle: TextStyle(
                 color: Colors.red,
@@ -154,6 +154,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
   }
 
   Widget taskClosed() {
+    widget.onCloseTaskId(widget.id);
     return Center(
       child: Card(
           child: Padding(
@@ -195,9 +196,10 @@ class _TaskEditDSState extends State<TaskEditDS> {
               Text('Tempo: '),
               CountDownTimer(
                 secondsRemaining: widget.tempoPResponder.inSeconds,
-                whenTimeExpires: () {
-                  widget.onCloseTaskId(widget.id);
-                  // print('terminou clock');
+                whenTimeExpires: () async {
+                  // await Future.delayed(Duration(seconds: 10));
+                  // widget.onCloseTaskId(widget.id);
+                  print('terminou clock edit 2');
                 },
                 countDownTimerStyle: TextStyle(
                   color: Colors.red,
