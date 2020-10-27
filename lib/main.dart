@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         theme: ThemeData.dark(),
-        title: 'AI Estudante',
+        title: 'AI Aluno',
         navigatorKey: Keys.navigatorStateKey,
         initialRoute: Routes.welcome,
         routes: Routes.routes,

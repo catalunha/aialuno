@@ -181,6 +181,18 @@ class _TaskEditDSState extends State<TaskEditDS> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(' Proposta: '),
+              IconButton(
+                tooltip: 'Link para a proposta da tarefa',
+                icon: Icon(Icons.link),
+                onPressed: () async {
+                  if (widget.situationRef.url != null) {
+                    if (await canLaunch(widget.situationRef.url)) {
+                      await launch(widget.situationRef.url);
+                    }
+                  }
+                },
+              ),
               Text('Tentativas:'),
               Padding(
                 padding: const EdgeInsets.all(8.0),

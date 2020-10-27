@@ -108,7 +108,8 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
   GetDocsTaskListAsyncTaskAction(this.taskList);
 
   @override
-  Future<AppState> reduce() async {
+  // Future<AppState> reduce() async {
+  AppState reduce() {
     Firestore firestore = Firestore.instance;
 
     TaskModel taskModel;
@@ -118,16 +119,17 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
       bool _updateIsOpen = task.updateIsOpen;
       print('_isOpen: $_isOpen. _updateIsOpen:$_updateIsOpen');
       if ((_isOpen != _updateIsOpen)) {
+        task.isOpen = false;
         final taskDoc =
             firestore.collection(TaskModel.collection).document(task.id);
-        await taskDoc.setData(
+        taskDoc.setData(
           {'isOpen': false},
           merge: true,
         );
         return null;
       }
     }
-
+    taskList.removeWhere((element) => element.isOpen == false);
     if (state.taskState.taskCurrent != null) {
       int index = taskList.indexWhere(
           (element) => element.id == state.taskState.taskCurrent.id);
