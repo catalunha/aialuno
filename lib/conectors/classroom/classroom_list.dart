@@ -46,8 +46,7 @@ class ViewModel extends BaseModel<AppState> {
         },
         onTaskList: (String classroomId) {
           dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
-          dispatch(SetTaskFilterSyncTaskAction(
-              TaskFilter.isActiveByClassroomActive));
+          dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forView));
 
           dispatch(NavigateAction.pushNamed(Routes.taskList));
         },

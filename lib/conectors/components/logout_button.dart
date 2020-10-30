@@ -1,4 +1,5 @@
 import 'package:aialuno/actions/logged_action.dart';
+import 'package:aialuno/routes.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:aialuno/uis/components/logout_button_ds.dart';
 import 'package:async_redux/async_redux.dart';
@@ -12,9 +13,12 @@ class ViewModel extends BaseModel<AppState> {
     @required this.logout,
   }) : super(equals: []);
   @override
-  ViewModel fromStore() => ViewModel.build(logout: () {
-        return dispatch(LogoutAsyncLoggedAction());
-      });
+  ViewModel fromStore() => ViewModel.build(
+        logout: () {
+          dispatch(LogoutAsyncLoggedAction());
+          dispatch(NavigateAction.pushNamedAndRemoveAll(Routes.welcome));
+        },
+      );
 }
 
 class LogoutButton extends StatelessWidget {

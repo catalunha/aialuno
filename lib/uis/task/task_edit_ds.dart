@@ -120,17 +120,17 @@ class _TaskEditDSState extends State<TaskEditDS> {
               ),
             ),
           ),
-          IconButton(
-            tooltip: 'Link para a proposta da tarefa',
-            icon: Icon(Icons.link),
-            onPressed: () async {
-              if (widget.situationRef.url != null) {
-                if (await canLaunch(widget.situationRef.url)) {
-                  await launch(widget.situationRef.url);
-                }
-              }
-            },
-          )
+          // IconButton(
+          //   tooltip: 'Link para a proposta da tarefa',
+          //   icon: Icon(Icons.link),
+          //   onPressed: () async {
+          //     if (widget.situationRef.url != null) {
+          //       if (await canLaunch(widget.situationRef.url)) {
+          //         await launch(widget.situationRef.url);
+          //       }
+          //     }
+          //   },
+          // )
         ],
       ),
       body: Center(
@@ -181,8 +181,9 @@ class _TaskEditDSState extends State<TaskEditDS> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(' Proposta: '),
+              Text('Proposta:'),
               IconButton(
+                color: Colors.red,
                 tooltip: 'Link para a proposta da tarefa',
                 icon: Icon(Icons.link),
                 onPressed: () async {
@@ -221,7 +222,12 @@ class _TaskEditDSState extends State<TaskEditDS> {
               ),
             ],
           )),
-
+          Text(
+              'Situação: ${widget.situationRef.name} (${widget.situationRef.id.substring(0, 4)})'),
+          Text(
+              'Questão: ${widget.questionRef.name} (${widget.questionRef.id.substring(0, 4)})'),
+          Text(
+              'Exame: ${widget.exameRef.name} (${widget.exameRef.id.substring(0, 4)})'),
           Text(
               'Inicio: ${widget.start != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.start) : ""}'),
           Text(
@@ -232,20 +238,17 @@ class _TaskEditDSState extends State<TaskEditDS> {
               'Finaliza em: ${widget.end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(widget.end) : ""}'),
           // Text('Tempo ao iniciar: ${widget.time}h'),
           Text(
-              'Peso do exame: ${widget.scoreExame}. E da questão: ${widget.scoreQuestion}. '),
-          Text(
-              'Exame: ${widget.exameRef.name}. Questão: ${widget.questionRef.name}. Situação: ${widget.situationRef.name}. Link na barra superior.'),
+              'Peso do exame: ${widget.scoreExame}. Peso da questão: ${widget.scoreQuestion}. '),
           Row(children: [
-            Text('Entradas para solução: ${widget.simulationInput.length}'),
+            Text('Meus ${widget.simulationInput.length} valores individuais:'),
           ]),
           ...simulationInputBuilder(context, widget.simulationInput),
           Row(children: [
-            Text(
-                'Respostas do desenvolvimento: ${widget.simulationOutput.length}'),
+            Text('Minhas ${widget.simulationOutput.length} respostas:'),
           ]),
           ...simulationOutputBuilder(context, widget.simulationOutput),
           Container(
-            height: 50,
+            height: 80,
           ),
         ],
       ),
@@ -261,11 +264,11 @@ class _TaskEditDSState extends State<TaskEditDS> {
     for (var input in inputList) {
       Widget icone = Icon(Icons.question_answer);
       if (input.type == 'numero') {
-        icone = Icon(Icons.looks_one);
+        icone = IconButton(icon: Icon(Icons.looks_one), onPressed: null);
       } else if (input.type == 'palavra') {
-        icone = Icon(Icons.text_format);
+        icone = IconButton(icon: Icon(Icons.text_format), onPressed: null);
       } else if (input.type == 'texto') {
-        icone = Icon(Icons.text_fields);
+        icone = IconButton(icon: Icon(Icons.text_fields), onPressed: null);
       } else if (input.type == 'url') {
         icone = IconButton(
           tooltip: 'Um link ao um site ou arquivo',
@@ -306,11 +309,20 @@ class _TaskEditDSState extends State<TaskEditDS> {
       Widget icone = Icon(Icons.question_answer);
 
       if (output.type == 'numero') {
-        icone = Icon(Icons.looks_one);
+        icone = IconButton(
+          icon: Icon(Icons.looks_one),
+          onPressed: null,
+        );
       } else if (output.type == 'palavra') {
-        icone = Icon(Icons.text_format);
+        icone = IconButton(
+          icon: Icon(Icons.text_format),
+          onPressed: null,
+        );
       } else if (output.type == 'texto') {
-        icone = Icon(Icons.text_fields);
+        icone = IconButton(
+          icon: Icon(Icons.text_fields),
+          onPressed: null,
+        );
       } else if (output.type == 'url') {
         // icone = Icon(Icons.link);
         icone = IconButton(

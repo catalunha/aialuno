@@ -25,10 +25,13 @@ class LoginPageDSState extends State<LoginPageDS> {
   void validateInputsLogin() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      widget.loginEmailPassword(
-        _userName,
-        _password,
-      );
+      print(_password);
+      if (_password != null && _password.isNotEmpty) {
+        widget.loginEmailPassword(
+          _userName,
+          _password,
+        );
+      }
     } else {
       setState(() {});
     }
@@ -64,7 +67,13 @@ class LoginPageDSState extends State<LoginPageDS> {
                       decoration: InputDecoration(
                         labelText: 'Email:',
                       ),
-                      onSaved: (value) => _userName = value,
+                      onSaved: (value) => _userName = value.trim(),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Informe o email.';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       // initialValue: 'aialuno',
@@ -74,13 +83,15 @@ class LoginPageDSState extends State<LoginPageDS> {
                       ),
                       onSaved: (value) => _password = value,
                     ),
-                    ListTile(
-                      title:
-                          Center(child: Text('Acessar com este email e senha')),
-                      trailing: Icon(Icons.verified_user),
-                      onTap: () {
-                        validateInputsLogin();
-                      },
+                    Card(
+                      child: ListTile(
+                        title: Center(
+                            child: Text('Acessar com este email e senha')),
+                        trailing: Icon(Icons.verified_user),
+                        onTap: () {
+                          validateInputsLogin();
+                        },
+                      ),
                     ),
                     ListTile(
                       title: Center(child: Text('Pedir nova senha por email.')),

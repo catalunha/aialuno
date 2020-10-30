@@ -92,9 +92,8 @@ enum QuestionOrder {
   name,
 }
 enum TaskFilter {
-  isActive,
-  isNotActive,
-  isActiveByClassroomActive,
+  forSolve,
+  forView,
 }
 enum TaskOrder {
   name,

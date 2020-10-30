@@ -35,8 +35,7 @@ class TaskList extends StatelessWidget {
       //debug: this,
       model: ViewModel(),
       onInit: (store) {
-        store.dispatch(
-            SetTaskFilterSyncTaskAction(TaskFilter.isActiveByClassroomActive));
+        store.dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forView));
         store.dispatch(StreamColTaskAsyncTaskAction());
       },
       builder: (context, viewModel) => TaskListDS(

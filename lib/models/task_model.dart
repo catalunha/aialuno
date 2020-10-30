@@ -28,6 +28,8 @@ class TaskModel extends FirestoreModel {
   dynamic started;
   dynamic lastSendAnswer;
   dynamic attempted;
+  //isOpen=true quando criada
+  //isOpen=false Se end < now. Se responderAte < now. Se tentou < tentativa
   bool isOpen;
   Map<String, Input> simulationInput = Map<String, Input>();
   Map<String, Output> simulationOutput = Map<String, Output>();
@@ -161,27 +163,32 @@ class TaskModel extends FirestoreModel {
     return data;
   }
 
+  String quantidadeSingularPlural(
+      dynamic quantidade, String singular, String plural) {
+    if (quantidade == null) {
+      return '0 $plural';
+    } else if (quantidade == 1) {
+      return '1 $singular';
+    } else {
+      return '$quantidade $plural';
+    }
+  }
+
   @override
   String toString() {
     String _return = '';
     _return = _return +
+        'Situação: ${situationRef.name} (${situationRef.id.substring(0, 4)}).';
+    _return = _return +
+        '\nQuestão: ${questionRef.name} (${questionRef.id.substring(0, 4)}).';
+    _return =
+        _return + '\nExame: ${exameRef.name} (${exameRef.id.substring(0, 4)}).';
+    _return = _return +
         '\nProfessor: ${teacherUserRef.name.split(' ')[0]} (${teacherUserRef.id.substring(0, 4)}).';
-    // _return = _return + '\nteacherUserRef.name: ${teacherUserRef.name}';
     _return = _return +
         '\nTurma: ${classroomRef.name} (${classroomRef.id.substring(0, 4)}).';
-    // _return = _return + '\nclassroomRef.name: ${classroomRef.name}';
-    _return = _return +
-        ' Avaliação: ${exameRef.name} (${exameRef.id.substring(0, 4)}).';
-    // _return = _return + '\nexameRef.name: ${exameRef.name}';
-    _return = _return +
-        ' Questão: ${questionRef.name} (${questionRef.id.substring(0, 4)}).';
-    // _return = _return + '\nquestionRef.name: ${questionRef.name}';
-    _return = _return +
-        ' Situação: ${situationRef.name} (${situationRef.id.substring(0, 4)}).';
-    // _return = _return + '\nsituationRef.name: ${situationRef.name}';
     _return = _return +
         '\nEstudante: ${studentUserRef.name.split(' ')[0]} (${studentUserRef.id.substring(0, 4)})';
-    // _return = _return + '\nstudentUserRef.name: ${studentUserRef.name}';
 
     _return = _return +
         '\nInício: ${start != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(start) : ""}';
@@ -191,8 +198,8 @@ class TaskModel extends FirestoreModel {
         '\nÚltimo envio: ${lastSendAnswer != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(lastSendAnswer) : ""}';
     _return = _return +
         '\nFim: ${end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(end) : ""}';
-    _return =
-        _return + '\nPeso do exame: $scoreExame. E da questão: $scoreQuestion.';
+    _return = _return +
+        '\nPeso do exame: $scoreExame. Peso da questão: $scoreQuestion.';
     // _return = _return + '\nscoreQuestion: $scoreQuestion';
     _return = _return + ' Tentativa: $attempted de $attempt.';
     // _return = _return + '\nattempted: $attempted';
@@ -203,7 +210,8 @@ class TaskModel extends FirestoreModel {
     // _return = _return + '\nresponderAte: $responderAte';
     // _return = _return + '\ntempoPResponder: $tempoPResponder';
 
-    _return = _return + '\n ** Entrada: ${simulationInput?.length} ** ';
+    _return = _return +
+        '\n ** ${quantidadeSingularPlural(simulationInput?.length, "valor individual", "valores individuais")}:  ** ';
     // List<Input> _inputList = [];
     // if (simulationInput != null) {
     //   for (var item in simulationInput.entries) {
@@ -235,7 +243,9 @@ class TaskModel extends FirestoreModel {
     //         '\n${item.name}=${item.value} [${item.type}] ${item?.right != null ? item.right ? "Certo" : "Errado" : "Não corrigido"}';
     //   }
     // }
-    _return = _return + '\n ** Saída: ${simulationOutput?.length} ** ';
+    _return = _return +
+        '\n ** ${quantidadeSingularPlural(simulationOutput?.length, "resposta", "respostas")}:  ** ';
+
     List<Output> _outputList = [];
     if (simulationOutput != null) {
       for (var item in simulationOutput.entries) {
@@ -259,26 +269,34 @@ class TaskModel extends FirestoreModel {
     print('updateIsOpen...');
     if (this.isOpen && this.end.isBefore(DateTime.now())) {
       this.isOpen = false;
-      print('==> Tarefa ${this.id}. aberta=${this.isOpen} pois fim < now');
+      print('==> Tarefa ${this.id}. isOpen=${this.isOpen}. Pois fim < now');
     }
     if (this.isOpen &&
         this.started != null &&
-        this.responderAte != null &&
+        // this.responderAte != null &&
         this.responderAte.isBefore(DateTime.now())) {
       this.isOpen = false;
-      print('==> Tarefa ${this.id} Fechada pois responderAte < now');
+      print(
+          '==> Tarefa ${this.id}. isOpen=${this.isOpen}. Fechada pois responderAte < now');
     }
     if (this.isOpen &&
         this.attempted != null &&
         this.attempted >= this.attempt) {
       this.isOpen = false;
-      print('==> Tarefa ${this.id} Fechada pois tentou < tentativa');
+      print(
+          '==> Tarefa ${this.id}. isOpen=${this.isOpen}. Fechada pois tentou < tentativa');
     }
     return this.isOpen;
   }
 
+  /// Quando o usuario iniciou a tarefa e soma-se o tempo de resolução
+  /// Started + time
+  /// Exemplo:
+  /// Start = 20201029 08:00:00
+  /// Started = 20201030 14:00:00
+  /// time  = 2
+  /// responderAte = 20201030 16:00:00
   DateTime get responderAte {
-    print('responderAte...');
     if (this.started != null) {
       return this.started.add(Duration(hours: this.time));
     } else {
@@ -286,25 +304,28 @@ class TaskModel extends FirestoreModel {
     }
   }
 
+  // responderAte = Started+time
+  // -------------------------------------------------
+  // |Start
+  //                                         |End
+  //                       |Started    |responderAte
+  // |now
+  //                           [now    ]tempoPResponder
   dynamic get tempoPResponder {
-    print('tempoPResponder...');
-    responderAte;
     if (this.started == null) {
-      // return Duration(hours: this.tempo);
       return null;
     } else {
-      if (this.responderAte != null && this.end.isBefore(this.responderAte)) {
+      if (this.end.isBefore(this.responderAte)) {
         return this.end.difference(DateTime.now());
-      }
-      if (this.responderAte != null) {
+      } else {
         return this.responderAte.difference(DateTime.now());
       }
     }
   }
 
-  void updateAll() {
-    responderAte;
-    tempoPResponder;
-    updateIsOpen;
-  }
+  // void updateAll() {
+  //   responderAte;
+  //   tempoPResponder;
+  //   updateIsOpen;
+  // }
 }

@@ -13,7 +13,7 @@ class TaskState {
     this.taskCurrent,
   });
   factory TaskState.initialState() => TaskState(
-        taskFilter: TaskFilter.isActive,
+        taskFilter: TaskFilter.forSolve,
         taskList: <TaskModel>[],
         taskCurrent: null,
       );

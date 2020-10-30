@@ -14,7 +14,7 @@ class SetTaskCurrentSyncTaskAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState> reduce() async {
-    print('SetTaskCurrentSyncTaskAction');
+    print('=Action= SetTaskCurrentSyncTaskAction');
     Firestore firestore = Firestore.instance;
     TaskModel taskModel;
 
@@ -22,7 +22,7 @@ class SetTaskCurrentSyncTaskAction extends ReduxAction<AppState> {
         state.taskState.taskList.firstWhere((element) => element.id == id);
     taskModel = TaskModel(taskModelTemp.id).fromMap(taskModelTemp.toMap());
 
-    taskModel.updateAll();
+    taskModel.updateIsOpen;
     if (taskModel.started == null) {
       taskModel.started = DateTime.now();
       // taskModel.started = FieldValue.serverTimestamp();
@@ -66,26 +66,24 @@ class SetTaskFilterSyncTaskAction extends ReduxAction<AppState> {
 class StreamColTaskAsyncTaskAction extends ReduxAction<AppState> {
   @override
   AppState reduce() {
-    print('StreamColTaskAsyncTaskAction...');
+    print('=Action= StreamColTaskAsyncTaskAction...');
     Firestore firestore = Firestore.instance;
     String studentUserId = state.userState.userCurrent.id;
     Query collRef;
-    if (state.taskState.taskFilter == TaskFilter.isActive) {
+    if (state.taskState.taskFilter == TaskFilter.forSolve) {
       print('TaskFilter.isActive');
       collRef = firestore
           .collection(TaskModel.collection)
           .where('studentUserRef.id', isEqualTo: studentUserId)
           .where('isOpen', isEqualTo: true)
           .where('start', isLessThan: DateTime.now());
-    } else if (state.taskState.taskFilter ==
-        TaskFilter.isActiveByClassroomActive) {
+    } else if (state.taskState.taskFilter == TaskFilter.forView) {
       print('TaskFilter.isActiveByClassroomActive');
       String classroomId = state.classroomState.classroomCurrent.id;
       collRef = firestore
           .collection(TaskModel.collection)
           .where('classroomRef.id', isEqualTo: classroomId)
           .where('studentUserRef.id', isEqualTo: studentUserId)
-          // .where('open', isEqualTo: true)
           .where('start', isLessThan: DateTime.now());
     }
     Stream<QuerySnapshot> streamQuerySnapshot = collRef.snapshots();
@@ -113,9 +111,9 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     Firestore firestore = Firestore.instance;
 
     TaskModel taskModel;
-    print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
+    print('=Action= GetDocsTaskListAsyncTaskAction... ${taskList.length}');
     for (var task in taskList) {
-      print(task.id);
+      print('task: ${task.id}');
       bool _isOpen = task.isOpen;
       bool _updateIsOpen = task.updateIsOpen;
       print('_isOpen: $_isOpen. _updateIsOpen:$_updateIsOpen');
@@ -130,7 +128,9 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
         return null;
       }
     }
-    // taskList.removeWhere((element) => element.isOpen == false);
+    if (state.taskState.taskFilter == TaskFilter.forSolve) {
+      taskList.removeWhere((element) => element.isOpen == false);
+    }
     if (state.taskState.taskCurrent != null) {
       int index = taskList.indexWhere(
           (element) => element.id == state.taskState.taskCurrent.id);
@@ -157,7 +157,7 @@ class CloseTaskAsyncTaskAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState> reduce() async {
-    print('CloseTaskAsyncTaskAction: $closeTaskId');
+    print('=Action= CloseTaskAsyncTaskAction: $closeTaskId');
     Firestore firestore = Firestore.instance;
     TaskModel taskModel;
 
@@ -209,7 +209,7 @@ class UpdateDocTaskCurrentAsyncTaskAction extends ReduxAction<AppState> {
   @override
   // Future<AppState> reduce() async {
   AppState reduce() {
-    print('UpdateDocQuestionCurrentAsyncQuestionAction...');
+    print('=Action= UpdateDocQuestionCurrentAsyncQuestionAction...');
     Firestore firestore = Firestore.instance;
     TaskModel taskModel = TaskModel(state.taskState.taskCurrent.id)
         .fromMap(state.taskState.taskCurrent.toMap());
@@ -267,7 +267,7 @@ class UpdateOutputAsyncTaskAction extends ReduxAction<AppState> {
   @override
   Future<AppState> reduce() async {
     // AppState reduce() {
-    print('UpdateOutputAsyncTaskAction...');
+    print('=Action= UpdateOutputAsyncTaskAction...');
     Firestore firestore = Firestore.instance;
     TaskModel taskModel = TaskModel(state.taskState.taskCurrent.id)
         .fromMap(state.taskState.taskCurrent.toMap());

@@ -1,5 +1,6 @@
 import 'package:aialuno/models/task_model.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TaskListDS extends StatefulWidget {
   final List<TaskModel> taskList;
@@ -42,13 +43,24 @@ class _TaskListDSState extends State<TaskListDS> {
                         selected: task?.isOpen != null ? task.isOpen : false,
                         title: Text('${task.id.substring(0, 4)}'),
                         subtitle: Text('${task.toString()}'),
-                        // trailing: IconButton(
-                        //   tooltip: 'Editar esta tarefa',
-                        //   icon: Icon(Icons.edit),
-                        //   onPressed: () async {
-                        //     widget.onEditTaskCurrent(task.id);
-                        //   },
-                        // ),
+                        trailing: task.started != null
+                            ? IconButton(
+                                tooltip: 'Proposta da tarefa',
+                                icon: Icon(Icons.link),
+                                onPressed: () async {
+                                  if (task.situationRef.url != null) {
+                                    if (await canLaunch(
+                                        task.situationRef.url)) {
+                                      await launch(task.situationRef.url);
+                                    }
+                                  }
+                                },
+                              )
+                            : IconButton(
+                                tooltip: 'Proposta da tarefa',
+                                icon: Icon(Icons.link),
+                                onPressed: null,
+                              ),
                       ),
                     ),
                   ],

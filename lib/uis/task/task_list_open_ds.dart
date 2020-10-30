@@ -25,14 +25,26 @@ class TaskListOpenDS extends StatefulWidget {
 }
 
 class _TaskListOpenDSState extends State<TaskListOpenDS> {
+  String quantidadeSingularPlural(
+      dynamic quantidade, String singular, String plural) {
+    if (quantidade == null) {
+      return '0 $plural';
+    } else if (quantidade == 1) {
+      return '1 $singular';
+    } else {
+      return '$quantidade $plural';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Olá ${widget.userModel?.name?.split(' ')[0]}. ${widget.taskList.length} tarefas.'),
+            'Olá ${widget.userModel?.name?.split(' ')[0]}. ${quantidadeSingularPlural(widget.taskList.length, "tarefa", "tarefas")}.'),
         actions: [
           IconButton(
+            tooltip: 'Acessar minhas turmas e tarefas antigas',
             icon: Icon(Icons.fact_check_outlined),
             onPressed: () =>
                 Navigator.pushReplacementNamed(context, Routes.classroomList),
