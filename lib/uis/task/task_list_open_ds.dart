@@ -4,6 +4,7 @@ import 'package:aialuno/models/user_model.dart';
 import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/components/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TaskListOpenDS extends StatefulWidget {
   final UserModel userModel;
@@ -95,7 +96,11 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                         ],
                       ),
                       selected: task?.isOpen != null ? task.isOpen : false,
-                      title: Text('Tarefa: ${task.id.substring(0, 4)}'),
+
+                      title: task.tempoPResponder == null
+                          ? Text(
+                              'Tarefa: ${task.id.substring(0, 4)}\nFim: ${task.end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(task.end) : ""}')
+                          : Text('Tarefa: ${task.id.substring(0, 4)}'),
                       subtitle: Text('${task.toString()}'),
                       // trailing: IconButton(
                       //   tooltip: 'Editar esta tarefa',

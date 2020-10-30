@@ -115,6 +115,7 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     TaskModel taskModel;
     print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
     for (var task in taskList) {
+      print(task.id);
       bool _isOpen = task.isOpen;
       bool _updateIsOpen = task.updateIsOpen;
       print('_isOpen: $_isOpen. _updateIsOpen:$_updateIsOpen');
@@ -129,7 +130,7 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
         return null;
       }
     }
-    taskList.removeWhere((element) => element.isOpen == false);
+    // taskList.removeWhere((element) => element.isOpen == false);
     if (state.taskState.taskCurrent != null) {
       int index = taskList.indexWhere(
           (element) => element.id == state.taskState.taskCurrent.id);
