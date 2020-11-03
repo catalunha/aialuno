@@ -9,3 +9,11 @@ A parceria bilionária e forçada da mae dele é que impulsionou o negócio.
 Hoje a micro
 
 5 perguntas:
+
+  <!-- <meta name="description"          content="Uma comunidade que acredita na transformação por meio da bicicleta!">
+  <meta property="og:url"           content="https://bikeanjo.org/" />
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="bikeanjo.org" />
+  <meta property="og:description"   content="Uma comunidade que acredita na transformação por meio da bicicleta!" />
+  <meta property="og:image"         content="https://bikeanjo.org/static/imgs/logo-bike-anjo.png" />
+   -->
