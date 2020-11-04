@@ -349,19 +349,43 @@ class _TaskEditDSState extends State<TaskEditDS> {
               ),
               Expanded(
                 child: TextFormField(
-                  initialValue: output.answer == null ? '0' : output.answer,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
-                  ],
-                  keyboardType: TextInputType.number,
+                  initialValue: output.answer == null ? '' : output.answer,
+                  // inputFormatters: [
+                  //   //
+                  //   FilteringTextInputFormatter.allow(
+                  //       // RegExp(r'^[\\-|\\ ]'),
+                  //       // RegExp(r'^([+-]?\d\.?\d*)?([eE][+-]?\d+)?'),
+                  //       RegExp(r'^[+-]?\d+\.?\d*'))
+                  // ],
+                  // keyboardType: TextInputType.number,
+                  // keyboardType: TextInputType.numberWithOptions(decimal: true),
                   maxLines: null,
                   decoration: InputDecoration(
-                    labelText: '${output.name}:: [${output.type}]',
+                    labelText:
+                        '${output.name}:  ${_simulationOutput[output.id].answer} [${output.type}]',
                   ),
-                  onChanged: (newValue) =>
-                      _simulationOutput[output.id].answer = newValue,
-                  onSaved: (newValue) =>
-                      _simulationOutput[output.id].answer = newValue,
+                  onChanged: (newValue) {
+                    try {
+                      double respostaNumerica = double.parse(newValue);
+                      _simulationOutput[output.id].answer = newValue;
+                    } catch (error) {
+                      _simulationOutput[output.id].answer = null;
+                    }
+                    setState(() {});
+                  },
+                  onSaved: (newValue) => _simulationOutput[output.id].answer =
+                      newValue.isEmpty ? null : newValue,
+                  validator: (value) {
+                    try {
+                      if (value != null && value.isNotEmpty) {
+                        double.parse(_simulationOutput[output.id].answer);
+                      }
+                      return null;
+                    } catch (error) {
+                      _simulationOutput[output.id].answer = null;
+                      return 'Valor NÃO foi entendido como sendo um número.';
+                    }
+                  },
                 ),
               ),
             ],
@@ -377,7 +401,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
               ),
               Expanded(
                 child: TextFormField(
-                  initialValue: output.answer == null ? '...' : output.answer,
+                  initialValue: output.answer == null ? '' : output.answer,
                   decoration: InputDecoration(
                     labelText: '${output.name}: [${output.type}]',
                   ),
