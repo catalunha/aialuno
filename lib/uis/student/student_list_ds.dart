@@ -18,7 +18,7 @@ class _StudentListDSState extends State<StudentListDS> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Estudantes (${widget.studentList.length})'),
+        title: Text('Sua turma tem ${widget.studentList.length} estudantes.'),
         actions: [
           // LogoutButton(),
         ],

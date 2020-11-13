@@ -1,5 +1,4 @@
 import 'package:aialuno/models/user_model.dart';
-import 'package:aialuno/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:aialuno/conectors/components/logout_button.dart';
 import 'package:aialuno/models/classroom_model.dart';
@@ -13,6 +12,7 @@ class ClassroomListDS extends StatefulWidget {
   final Function(String) onExameList;
   // final Function() onSituationList;
   final Function(String) onTaskList;
+  final Function(String) onTaskListOpen;
   final Function(int oldIndex, int newIndex) onChangeClassroomListOrder;
 
   const ClassroomListDS({
@@ -25,6 +25,7 @@ class ClassroomListDS extends StatefulWidget {
     this.userLogged,
     // this.onSituationList,
     this.onTaskList,
+    this.onTaskListOpen,
   }) : super(key: key);
 
   @override
@@ -32,39 +33,38 @@ class ClassroomListDS extends StatefulWidget {
 }
 
 class _ClassroomListDSState extends State<ClassroomListDS> {
+  String quantidadeSingularPlural(
+      dynamic quantidade, String singular, String plural) {
+    if (quantidade == null) {
+      return '0 $plural';
+    } else if (quantidade == 1) {
+      return '1 $singular';
+    } else {
+      return '$quantidade $plural';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Turmas (${widget.classroomList.length})'),
+        title: Text(
+            'Olá ${widget.userLogged?.name?.split(' ')[0]}. Vc está em ${quantidadeSingularPlural(widget.classroomList.length, "turma", "turmas")}.'),
         actions: [
-          // IconButton(
-          //   icon: Icon(Icons.fact_check_outlined),
-          //   onPressed: () =>
-          //       Navigator.pushReplacementNamed(context, Routes.taskListOpen),
-          // ),
+          LogoutButton(),
         ],
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_return_sharp),
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, Routes.taskListOpen),
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.keyboard_return_sharp),
+        //   onPressed: () =>
+        //       Navigator.pushReplacementNamed(context, Routes.taskListOpen),
+        // ),
       ),
       body: Center(
         child: Container(
-          width: 600,
-          child: Column(
-            children: [
-              Expanded(
-                child: ReorderableListView(
-                  scrollDirection: Axis.vertical,
-                  children: buildItens(),
-                  onReorder: _onReorder,
-                ),
-              ),
-            ],
-          ),
-        ),
+            width: 500,
+            child: ListView(
+              children: buildItens(),
+            )),
       ),
       // body: ListView.builder(
       //   itemCount: widget.classroomList.length,
@@ -152,65 +152,49 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
           key: ValueKey(classroom),
           color:
               !classroom.isActive ? Colors.brown : Theme.of(context).cardColor,
-          child: Wrap(
-            alignment: WrapAlignment.spaceEvenly,
+          child: Column(
             children: [
-              Container(
-                width: 440,
-                child: ListTile(
-                  title: Text('${classroom.name}'),
-                  subtitle: Text('${classroom.toString()}'),
-                ),
+              ListTile(
+                title: Text('${classroom.name}'),
+                subtitle: Text('${classroom.toString()}'),
               ),
-              // IconButton(
-              //   icon: Icon(Icons.edit),
-              //   onPressed: () async {
-              //     widget.onEditClassroomCurrent(classroom.id);
-              //   },
-              // ),
-              IconButton(
-                icon: Icon(Icons.link),
-                onPressed: () async {
-                  if (classroom?.urlProgram != null) {
-                    if (await canLaunch(classroom.urlProgram)) {
-                      await launch(classroom.urlProgram);
-                    }
-                  }
-                },
+              Wrap(
+                alignment: WrapAlignment.start,
+                children: [
+                  IconButton(
+                    tooltip: 'Programa da turma',
+                    icon: Icon(Icons.link),
+                    onPressed: () async {
+                      if (classroom?.urlProgram != null) {
+                        if (await canLaunch(classroom.urlProgram)) {
+                          await launch(classroom.urlProgram);
+                        }
+                      }
+                    },
+                  ),
+                  IconButton(
+                    tooltip: 'Listar estudantes da turma',
+                    icon: Icon(Icons.people),
+                    onPressed: () async {
+                      widget.onStudentList(classroom.id);
+                    },
+                  ),
+                  IconButton(
+                    tooltip: 'Histórico de tarefas',
+                    icon: Icon(Icons.folder_open),
+                    onPressed: () async {
+                      widget.onTaskList(classroom.id);
+                    },
+                  ),
+                  IconButton(
+                    tooltip: 'Tarefas para desenvolvimento',
+                    icon: Icon(Icons.assignment),
+                    onPressed: () async {
+                      widget.onTaskListOpen(classroom.id);
+                    },
+                  ),
+                ],
               ),
-              IconButton(
-                tooltip: 'Listar estudantes',
-                icon: Icon(Icons.people),
-                onPressed: () async {
-                  widget.onStudentList(classroom.id);
-                },
-              ),
-              // IconButton(
-              //   tooltip: 'Listar avaliações',
-              //   icon: Icon(Icons.assignment),
-              //   onPressed: () async {
-              //     widget.onExameList(classroom.id);
-              //   },
-              // ),
-              // IconButton(
-              //   tooltip: 'Lista de Situaçãos',
-              //   icon: Icon(Icons.help),
-              //   onPressed: () async {
-              //     widget.onSituationList();
-              //   },
-              // ),
-              IconButton(
-                icon: Icon(Icons.folder_open),
-                onPressed: () async {
-                  widget.onTaskList(classroom.id);
-                },
-              ),
-              // IconButton(
-              //   icon: Icon(Icons.assignment),
-              //   onPressed: () async {
-              //     // onStudentList(classroom.id);
-              //   },
-              // ),
             ],
           ),
         ),
@@ -219,15 +203,15 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
     return list;
   }
 
-  void _onReorder(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-    setState(() {
-      ClassroomModel todo = widget.classroomList[oldIndex];
-      widget.classroomList.removeAt(oldIndex);
-      widget.classroomList.insert(newIndex, todo);
-    });
-    widget.onChangeClassroomListOrder(oldIndex, newIndex);
-  }
+  // void _onReorder(int oldIndex, int newIndex) {
+  //   if (newIndex > oldIndex) {
+  //     newIndex -= 1;
+  //   }
+  //   setState(() {
+  //     ClassroomModel todo = widget.classroomList[oldIndex];
+  //     widget.classroomList.removeAt(oldIndex);
+  //     widget.classroomList.insert(newIndex, todo);
+  //   });
+  //   widget.onChangeClassroomListOrder(oldIndex, newIndex);
+  // }
 }

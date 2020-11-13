@@ -260,41 +260,41 @@ class GetDocsClassroomListAsyncClassroomAction extends ReduxAction<AppState> {
 //   // void after() => dispatch(StreamColClassroomAsyncClassroomAction());
 // }
 
-// class UpdateDocclassroomIdInUserAsyncClassroomAction
-//     extends ReduxAction<AppState> {
-//   final int oldIndex;
-//   final int newIndex;
+class UpdateDocclassroomIdInUserAsyncClassroomAction
+    extends ReduxAction<AppState> {
+  final int oldIndex;
+  final int newIndex;
 
-//   UpdateDocclassroomIdInUserAsyncClassroomAction({
-//     this.oldIndex,
-//     this.newIndex,
-//   });
-//   @override
-//   Future<AppState> reduce() async {
-//     print('UpdateDocClassroomCurrentAsyncClassroomAction...');
-//     Firestore firestore = Firestore.instance;
-//     UserModel userModel = UserModel(state.loggedState.userModelLogged.id)
-//         .fromMap(state.loggedState.userModelLogged.toMap());
-//     int _newIndex = newIndex;
-//     if (newIndex > oldIndex) {
-//       _newIndex -= 1;
-//     }
-//     dynamic classroomOld = userModel.classroomId[oldIndex];
-//     userModel.classroomId.removeAt(oldIndex);
-//     userModel.classroomId.insert(_newIndex, classroomOld);
+  UpdateDocclassroomIdInUserAsyncClassroomAction({
+    this.oldIndex,
+    this.newIndex,
+  });
+  @override
+  Future<AppState> reduce() async {
+    print('UpdateDocClassroomCurrentAsyncClassroomAction...');
+    Firestore firestore = Firestore.instance;
+    UserModel userModel = UserModel(state.loggedState.userModelLogged.id)
+        .fromMap(state.loggedState.userModelLogged.toMap());
+    int _newIndex = newIndex;
+    if (newIndex > oldIndex) {
+      _newIndex -= 1;
+    }
+    dynamic classroomOld = userModel.classroomId[oldIndex];
+    userModel.classroomId.removeAt(oldIndex);
+    userModel.classroomId.insert(_newIndex, classroomOld);
 
-//     await firestore
-//         .collection(UserModel.collection)
-//         .document(state.loggedState.userModelLogged.id)
-//         .updateData({'classroomId': userModel.classroomId});
+    await firestore
+        .collection(UserModel.collection)
+        .document(state.loggedState.userModelLogged.id)
+        .updateData({'classroomId': userModel.classroomId});
 
-//     return null;
-//   }
+    return null;
+  }
 
-//   @override
-//   void after() {
-//     // dispatch(StreamColClassroomAsyncClassroomAction());
-//     dispatch(GetDocsUserModelAsyncLoggedAction(
-//         id: state.loggedState.userModelLogged.id));
-//   }
-// }
+  @override
+  void after() {
+    // dispatch(StreamColClassroomAsyncClassroomAction());
+    dispatch(GetDocsUserModelAsyncLoggedAction(
+        id: state.loggedState.userModelLogged.id));
+  }
+}

@@ -41,15 +41,15 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Olá ${widget.userModel?.name?.split(' ')[0]}. ${quantidadeSingularPlural(widget.taskList.length, "tarefa", "tarefas")}.'),
+            'Vc tem ${quantidadeSingularPlural(widget.taskList.length, "tarefa", "tarefas")}.'),
         actions: [
-          IconButton(
-            tooltip: 'Acessar minhas turmas e tarefas antigas',
-            icon: Icon(Icons.fact_check_outlined),
-            onPressed: () =>
-                Navigator.pushReplacementNamed(context, Routes.classroomList),
-          ),
-          LogoutButton(),
+          // IconButton(
+          //   tooltip: 'Acessar minhas turmas e tarefas antigas',
+          //   icon: Icon(Icons.fact_check_outlined),
+          //   onPressed: () =>
+          //       Navigator.pushReplacementNamed(context, Routes.classroomList),
+          // ),
+          // LogoutButton(),
         ],
       ),
       body: Center(
@@ -76,7 +76,7 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                                         EdgeInsets.only(top: 3.0, right: 4.0),
                                     child: CountDownTimer(
                                       secondsRemaining:
-                                          task.tempoPResponder.inSeconds,
+                                          task?.tempoPResponder?.inSeconds ?? 0,
                                       whenTimeExpires: () async {
                                         await Future.delayed(
                                             Duration(seconds: 10));
@@ -107,20 +107,12 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
                           )
                         ],
                       ),
-                      selected: task?.isOpen != null ? task.isOpen : false,
-
+                      selected: task?.started != null ? true : false,
                       title: task.tempoPResponder == null
                           ? Text(
                               'Tarefa: ${task.id.substring(0, 4)}\nFim: ${task.end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(task.end) : ""}')
                           : Text('Tarefa: ${task.id.substring(0, 4)}'),
                       subtitle: Text('${task.toString()}'),
-                      // trailing: IconButton(
-                      //   tooltip: 'Editar esta tarefa',
-                      //   icon: Icon(Icons.edit),
-                      //   onPressed: () async {
-                      //     widget.onEditTaskCurrent(task.id);
-                      //   },
-                      // ),
                     ),
                   ],
                 ),

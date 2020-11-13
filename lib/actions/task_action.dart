@@ -70,16 +70,18 @@ class StreamColTaskAsyncTaskAction extends ReduxAction<AppState> {
     Firestore firestore = Firestore.instance;
     String studentUserId = state.userState.userCurrent.id;
     Query collRef;
+    String classroomId = state.classroomState.classroomCurrent.id;
+
     if (state.taskState.taskFilter == TaskFilter.forSolve) {
-      print('TaskFilter.isActive');
+      print('TaskFilter.forSolve');
       collRef = firestore
           .collection(TaskModel.collection)
+          .where('classroomRef.id', isEqualTo: classroomId)
           .where('studentUserRef.id', isEqualTo: studentUserId)
           .where('isOpen', isEqualTo: true)
           .where('start', isLessThan: DateTime.now());
     } else if (state.taskState.taskFilter == TaskFilter.forView) {
-      print('TaskFilter.isActiveByClassroomActive');
-      String classroomId = state.classroomState.classroomCurrent.id;
+      print('TaskFilter.forView');
       collRef = firestore
           .collection(TaskModel.collection)
           .where('classroomRef.id', isEqualTo: classroomId)
@@ -111,7 +113,8 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     Firestore firestore = Firestore.instance;
 
     TaskModel taskModel;
-    print('=Action= GetDocsTaskListAsyncTaskAction... ${taskList.length}');
+    print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
+    taskList.sort((a, b) => a.end.compareTo(b.end));
     for (var task in taskList) {
       print('task: ${task.id}');
       bool _isOpen = task.isOpen;

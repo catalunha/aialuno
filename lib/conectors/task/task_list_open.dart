@@ -45,7 +45,6 @@ class TaskListOpen extends StatelessWidget {
       //debug: this,
       model: ViewModel(),
       onInit: (store) {
-        store.dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
         store.dispatch(StreamColTaskAsyncTaskAction());
       },
       builder: (context, viewModel) => TaskListOpenDS(

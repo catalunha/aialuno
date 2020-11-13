@@ -81,10 +81,10 @@ class UserModel extends FirestoreModel {
   String toString() {
     String _return = '';
     // _return = _return + '\nMatricula: $code';
-    _return = _return + '\nEmail: $email';
+    _return = _return + 'Email: $email';
     // _return = _return +
     //     '\nTurmas: ${classroomId?.length != null && classroomId.length > 0 ? classroomId.length : "NENHUMA"}. ';
-    _return = _return + '\nId: ${id.substring(0, 4)}';
+    // _return = _return + '\nId: ${id.substring(0, 4)}';
     return _return;
   }
 }

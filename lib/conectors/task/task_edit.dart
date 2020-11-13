@@ -86,7 +86,7 @@ class ViewModel extends BaseModel<AppState> {
     bool _return = true;
     print('_isDataValid: taskModel.isOpen: ${taskModel.isOpen}');
     print(
-        '_isDataValid: taskModel?.tempoPResponder?.inSeconds:${taskModel?.tempoPResponder?.inSeconds}');
+        '_isDataValid: taskModel?.tempoPResponder?.inSeconds:${taskModel?.tempoPResponder?.inSeconds ?? 0}');
     if (taskModel != null && taskModel.isOpen != null && !taskModel.isOpen) {
       _return = false;
     }

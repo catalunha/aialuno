@@ -108,7 +108,7 @@ class _TaskEditDSState extends State<TaskEditDS> {
             width: 70.0,
             padding: EdgeInsets.only(top: 3.0, right: 4.0),
             child: CountDownTimer(
-              secondsRemaining: widget.tempoPResponder.inSeconds,
+              secondsRemaining: widget?.tempoPResponder?.inSeconds ?? 0,
               whenTimeExpires: () {
                 Navigator.pop(context);
                 print('terminou clock edit 1');

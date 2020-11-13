@@ -177,16 +177,16 @@ class TaskModel extends FirestoreModel {
   @override
   String toString() {
     String _return = '';
-    _return = _return +
-        'Situação: ${situationRef.name} (${situationRef.id.substring(0, 4)}).';
+    _return =
+        _return + 'Exame: ${exameRef.name} (${exameRef.id.substring(0, 4)}).';
     _return = _return +
         '\nQuestão: ${questionRef.name} (${questionRef.id.substring(0, 4)}).';
-    _return =
-        _return + '\nExame: ${exameRef.name} (${exameRef.id.substring(0, 4)}).';
     _return = _return +
-        '\nProfessor: ${teacherUserRef.name.split(' ')[0]} (${teacherUserRef.id.substring(0, 4)}).';
+        '\nSituação: ${situationRef.name} (${situationRef.id.substring(0, 4)}).';
     _return = _return +
         '\nTurma: ${classroomRef.name} (${classroomRef.id.substring(0, 4)}).';
+    _return = _return +
+        '\nProfessor: ${teacherUserRef.name.split(' ')[0]} (${teacherUserRef.id.substring(0, 4)}).';
     _return = _return +
         '\nEstudante: ${studentUserRef.name.split(' ')[0]} (${studentUserRef.id.substring(0, 4)})';
 

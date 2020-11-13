@@ -1,3 +1,4 @@
+import 'package:aialuno/conectors/classroom/classroom_list.dart';
 import 'package:aialuno/conectors/home/home_page.dart';
 import 'package:aialuno/conectors/login/login_page.dart';
 import 'package:aialuno/conectors/task/task_list_open.dart';
@@ -26,7 +27,8 @@ class Welcome extends StatelessWidget {
       model: ViewModel(),
       builder: (BuildContext context, ViewModel viewModel) =>
           // viewModel.logged ? HomePage() : LoginPage(),
-          viewModel.logged ? TaskListOpen() : LoginPage(),
+          // viewModel.logged ? TaskListOpen() : LoginPage(),
+          viewModel.logged ? ClassroomList() : LoginPage(),
     );
   }
 }
