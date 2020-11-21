@@ -18,9 +18,17 @@ class ViewModel extends BaseModel<AppState> {
   }) : super(equals: [
           taskList,
         ]);
+  List<TaskModel> taskListFilter(List<TaskModel> _taskList) {
+    List<TaskModel> _return = _taskList
+        .where((element) =>
+            element.exameRef.id == state.exameState.exameCurrent.id)
+        .toList();
+    return _return;
+  }
+
   @override
   ViewModel fromStore() => ViewModel.build(
-        taskList: state.taskState.taskList,
+        taskList: taskListFilter(state.taskState.taskList),
         onEditTaskCurrent: (String id) {
           // dispatch(SetTaskCurrentSyncTaskAction(id));
           // dispatch(NavigateAction.pushNamed(Routes.taskEdit));

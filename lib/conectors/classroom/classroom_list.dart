@@ -13,6 +13,7 @@ class ViewModel extends BaseModel<AppState> {
   UserModel userLogged;
   List<ClassroomModel> classroomList;
   Function(String) onStudentList;
+  Function(String) onExameList;
   Function(String) onTaskList;
   Function(String) onTaskListOpen;
   Function(int, int) onChangeClassroomListOrder;
@@ -20,6 +21,7 @@ class ViewModel extends BaseModel<AppState> {
   ViewModel.build({
     @required this.userLogged,
     @required this.classroomList,
+    @required this.onExameList,
     @required this.onStudentList,
     @required this.onTaskList,
     @required this.onTaskListOpen,
@@ -36,10 +38,13 @@ class ViewModel extends BaseModel<AppState> {
           dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
           dispatch(NavigateAction.pushNamed(Routes.studentList));
         },
+        onExameList: (String classroomId) {
+          dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
+          dispatch(NavigateAction.pushNamed(Routes.exameList));
+        },
         onTaskList: (String classroomId) {
           dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
           dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forView));
-
           dispatch(NavigateAction.pushNamed(Routes.taskList));
         },
         onTaskListOpen: (String classroomId) {
@@ -68,6 +73,7 @@ class ClassroomList extends StatelessWidget {
         userLogged: viewModel.userLogged,
         classroomList: viewModel.classroomList,
         onStudentList: viewModel.onStudentList,
+        onExameList: viewModel.onExameList,
         onTaskList: viewModel.onTaskList,
         onTaskListOpen: viewModel.onTaskListOpen,
       ),

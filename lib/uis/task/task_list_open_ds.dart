@@ -1,23 +1,21 @@
-import 'package:aialuno/conectors/components/logout_button.dart';
 import 'package:aialuno/models/task_model.dart';
-import 'package:aialuno/models/user_model.dart';
-import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/components/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TaskListOpenDS extends StatefulWidget {
-  final UserModel userModel;
   final List<TaskModel> taskList;
   final Function(String) onEditTaskCurrent;
   final Function(String) onCloseTaskId;
+  final Function() onExameList;
 
   const TaskListOpenDS({
     Key key,
     this.taskList,
     this.onEditTaskCurrent,
-    this.userModel,
     this.onCloseTaskId,
+    this.onExameList,
   }) : super(key: key);
 
   @override
@@ -51,6 +49,13 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
           // ),
           // LogoutButton(),
         ],
+        leading: IconButton(
+          tooltip: 'Exames',
+          icon: Icon(Icons.home),
+          onPressed: () {
+            widget.onExameList();
+          },
+        ),
       ),
       body: Center(
         child: Container(
@@ -60,60 +65,127 @@ class _TaskListOpenDSState extends State<TaskListOpenDS> {
             itemBuilder: (context, index) {
               final task = widget.taskList[index];
               return Card(
-                child: Wrap(
+                child: Column(
                   // alignment: WrapAlignment.spaceEvenly,
                   children: [
                     ListTile(
-                      trailing: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: task.tempoPResponder == null
-                                ? Text('${task.time}h')
-                                : Container(
-                                    width: 70.0,
-                                    padding:
-                                        EdgeInsets.only(top: 3.0, right: 4.0),
-                                    child: CountDownTimer(
-                                      secondsRemaining:
-                                          task?.tempoPResponder?.inSeconds ?? 0,
-                                      whenTimeExpires: () async {
-                                        await Future.delayed(
-                                            Duration(seconds: 10));
-                                        widget.onCloseTaskId(task.id);
-                                        print(
-                                            'terminou time em list open da task: ${task.id}');
-                                      },
-                                      countDownTimerStyle: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 16.0,
-                                        // height: 2,
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              width: 50.0,
-                              child: IconButton(
+                      selected: task.isOpen,
+                      title: task.tempoPResponder == null
+                          ? Text('Tarefa: ${task.id.substring(0, 4)}')
+                          : Text('Tarefa: ${task.id.substring(0, 4)}'),
+                      subtitle: Text('${task.toString()}'),
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        task.isOpen
+                            ? IconButton(
                                 tooltip: 'Editar esta tarefa',
                                 icon: Icon(Icons.edit),
                                 onPressed: () async {
                                   widget.onEditTaskCurrent(task.id);
                                 },
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      selected: task?.started != null ? true : false,
-                      title: task.tempoPResponder == null
-                          ? Text(
-                              'Tarefa: ${task.id.substring(0, 4)}\nFim: ${task.end != null ? DateFormat('dd-MM-yyyy kk:mm:ss').format(task.end) : ""}')
-                          : Text('Tarefa: ${task.id.substring(0, 4)}'),
-                      subtitle: Text('${task.toString()}'),
-                    ),
+                              )
+                            : Container(),
+                        task.isOpen && task.tempoPResponder == null
+                            ? Text(
+                                'vc tem ${task.time}h pra resolver até ${task.end != null ? DateFormat('dd-MM kk:mm').format(task.end) : ""}')
+                            : Container(),
+                        task.isOpen && task.tempoPResponder != null
+                            ? CountDownTimer(
+                                secondsRemaining:
+                                    task?.tempoPResponder?.inSeconds ?? 0,
+                                whenTimeExpires: () async {
+                                  await Future.delayed(Duration(seconds: 10));
+                                  widget.onCloseTaskId(task.id);
+                                  print(
+                                      'terminou time em list open da task: ${task.id}');
+                                },
+                                countDownTimerStyle: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 16.0,
+                                  // height: 2,
+                                ),
+                              )
+                            : Container(),
+                        !task.isOpen
+                            ? IconButton(
+                                tooltip: 'Proposta da tarefa',
+                                icon: Icon(Icons.link),
+                                onPressed: () async {
+                                  if (task.situationRef.url != null) {
+                                    if (await canLaunch(
+                                        task.situationRef.url)) {
+                                      await launch(task.situationRef.url);
+                                    }
+                                  }
+                                },
+                              )
+                            : Container(),
+                      ],
+                    )
+                    // ListTile(
+                    //   trailing: Column(
+                    //     children: [
+                    //       task?.isOpen != null && task.isOpen
+                    //           ? Expanded(
+                    //               flex: 1,
+                    //               child: task.tempoPResponder == null
+                    //                   ? Text('${task.time}h')
+                    //                   : Container(
+                    //                       width: 70.0,
+                    //                       padding: EdgeInsets.only(
+                    //                           top: 3.0, right: 4.0),
+                    //                       child: CountDownTimer(
+                    //                         secondsRemaining: task
+                    //                                 ?.tempoPResponder
+                    //                                 ?.inSeconds ??
+                    //                             0,
+                    //                         whenTimeExpires: () async {
+                    //                           await Future.delayed(
+                    //                               Duration(seconds: 10));
+                    //                           widget.onCloseTaskId(task.id);
+                    //                           print(
+                    //                               'terminou time em list open da task: ${task.id}');
+                    //                         },
+                    //                         countDownTimerStyle: TextStyle(
+                    //                           color: Colors.red,
+                    //                           fontSize: 16.0,
+                    //                           // height: 2,
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //             )
+                    //           : Container(),
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: Container(
+                    //           width: 50.0,
+                    //           child: task?.isOpen != null
+                    //               ? IconButton(
+                    //                   tooltip: 'Editar esta tarefa',
+                    //                   icon: Icon(Icons.edit),
+                    //                   onPressed: () async {
+                    //                     widget.onEditTaskCurrent(task.id);
+                    //                   },
+                    //                 )
+                    //               : IconButton(
+                    //                   tooltip: 'Proposta da tarefa',
+                    //                   icon: Icon(Icons.link),
+                    //                   onPressed: () async {
+                    //                     if (task.situationRef.url != null) {
+                    //                       if (await canLaunch(
+                    //                           task.situationRef.url)) {
+                    //                         await launch(task.situationRef.url);
+                    //                       }
+                    //                     }
+                    //                   },
+                    //                 ),
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
                   ],
                 ),
               );

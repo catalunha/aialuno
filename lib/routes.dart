@@ -1,11 +1,12 @@
 import 'package:aialuno/conectors/classroom/classroom_list.dart';
+import 'package:aialuno/conectors/exame/exame_list.dart';
 import 'package:aialuno/conectors/student/student_list.dart';
 import 'package:aialuno/conectors/task/task_edit.dart';
 import 'package:aialuno/conectors/task/task_list.dart';
 import 'package:aialuno/conectors/task/task_list_open.dart';
+import 'package:async_redux/async_redux.dart';
 import 'package:aialuno/conectors/welcome.dart';
 import 'package:aialuno/states/app_state.dart';
-import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
@@ -15,6 +16,7 @@ class Routes {
   static final taskEdit = '/taskEdit';
   static final classroomList = '/classroomList';
   static final studentList = '/studentList';
+  static final exameList = '/exameList';
 
   static final routes = {
     welcome: (BuildContext context) => UserExceptionDialog<AppState>(
@@ -25,6 +27,7 @@ class Routes {
     taskList: (BuildContext context) => TaskList(),
     taskListOpen: (BuildContext context) => TaskListOpen(),
     taskEdit: (BuildContext context) => TaskEdit(),
+    exameList: (BuildContext context) => ExameList(),
   };
 }
 

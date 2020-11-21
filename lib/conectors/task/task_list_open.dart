@@ -9,31 +9,40 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 
 class ViewModel extends BaseModel<AppState> {
-  UserModel userModel;
   List<TaskModel> taskList;
   Function(String) onEditTaskCurrent;
   Function(String) onCloseTaskId;
+  Function() onExameList;
 
   ViewModel();
   ViewModel.build({
-    @required this.userModel,
     @required this.taskList,
+    @required this.onExameList,
     @required this.onEditTaskCurrent,
     @required this.onCloseTaskId,
   }) : super(equals: [
-          userModel,
           taskList,
         ]);
+  List<TaskModel> taskListFilter(List<TaskModel> _taskList) {
+    List<TaskModel> _return = _taskList
+        .where((element) =>
+            element.exameRef.id == state.exameState.exameCurrent.id)
+        .toList();
+    return _return;
+  }
+
   @override
   ViewModel fromStore() => ViewModel.build(
-        userModel: state.loggedState.userModelLogged,
-        taskList: state.taskState.taskList,
+        taskList: taskListFilter(state.taskState.taskList),
         onEditTaskCurrent: (String id) {
           dispatch(SetTaskCurrentSyncTaskAction(id));
           // dispatch(NavigateAction.pushNamed(Routes.taskEdit));
         },
         onCloseTaskId: (String closeTaskId) {
           dispatch(CloseTaskAsyncTaskAction(closeTaskId));
+        },
+        onExameList: () {
+          dispatch(NavigateAction.popUntil(Routes.welcome));
         },
       );
 }
@@ -48,8 +57,8 @@ class TaskListOpen extends StatelessWidget {
         store.dispatch(StreamColTaskAsyncTaskAction());
       },
       builder: (context, viewModel) => TaskListOpenDS(
-        userModel: viewModel.userModel,
         taskList: viewModel.taskList,
+        onExameList: viewModel.onExameList,
         onEditTaskCurrent: viewModel.onEditTaskCurrent,
         onCloseTaskId: viewModel.onCloseTaskId,
       ),

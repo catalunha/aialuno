@@ -71,23 +71,28 @@ class StreamColTaskAsyncTaskAction extends ReduxAction<AppState> {
     String studentUserId = state.userState.userCurrent.id;
     Query collRef;
     String classroomId = state.classroomState.classroomCurrent.id;
-
-    if (state.taskState.taskFilter == TaskFilter.forSolve) {
-      print('TaskFilter.forSolve');
-      collRef = firestore
-          .collection(TaskModel.collection)
-          .where('classroomRef.id', isEqualTo: classroomId)
-          .where('studentUserRef.id', isEqualTo: studentUserId)
-          .where('isOpen', isEqualTo: true)
-          .where('start', isLessThan: DateTime.now());
-    } else if (state.taskState.taskFilter == TaskFilter.forView) {
-      print('TaskFilter.forView');
-      collRef = firestore
-          .collection(TaskModel.collection)
-          .where('classroomRef.id', isEqualTo: classroomId)
-          .where('studentUserRef.id', isEqualTo: studentUserId)
-          .where('start', isLessThan: DateTime.now());
-    }
+    collRef = firestore
+        .collection(TaskModel.collection)
+        .where('classroomRef.id', isEqualTo: classroomId)
+        .where('studentUserRef.id', isEqualTo: studentUserId)
+        // .where('isOpen', isEqualTo: true)
+        .where('start', isLessThan: DateTime.now());
+    // if (state.taskState.taskFilter == TaskFilter.forSolve) {
+    //   print('TaskFilter.forSolve');
+    //   collRef = firestore
+    //       .collection(TaskModel.collection)
+    //       .where('classroomRef.id', isEqualTo: classroomId)
+    //       .where('studentUserRef.id', isEqualTo: studentUserId)
+    //       .where('isOpen', isEqualTo: true)
+    //       .where('start', isLessThan: DateTime.now());
+    // } else if (state.taskState.taskFilter == TaskFilter.forView) {
+    //   print('TaskFilter.forView');
+    //   collRef = firestore
+    //       .collection(TaskModel.collection)
+    //       .where('classroomRef.id', isEqualTo: classroomId)
+    //       .where('studentUserRef.id', isEqualTo: studentUserId)
+    //       .where('start', isLessThan: DateTime.now());
+    // }
     Stream<QuerySnapshot> streamQuerySnapshot = collRef.snapshots();
 
     Stream<List<TaskModel>> streamList = streamQuerySnapshot.map(
@@ -113,9 +118,27 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     Firestore firestore = Firestore.instance;
 
     TaskModel taskModel;
+    print('GetDocsTaskListAsyncTaskAction...');
+
+    // taskList.sort((a, b) => a.end.compareTo(b.end));
+
+    final Map<String, TaskModel> mapping = {
+      for (int i = 0; i < taskList.length; i++)
+        taskList[i].questionRef.id: taskList[i]
+    };
+
+    List<TaskModel> taskListOrdered = [];
+    if (state.exameState?.exameCurrent?.questionId != null) {
+      for (String id in state.exameState.exameCurrent.questionId)
+        if (mapping.containsKey(id)) {
+          taskListOrdered.add(mapping[id]);
+        }
+    } else {
+      taskListOrdered.addAll(taskList);
+    }
     print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');
-    taskList.sort((a, b) => a.end.compareTo(b.end));
-    for (var task in taskList) {
+    print('GetDocsTaskListAsyncTaskAction... ${taskListOrdered.length}');
+    for (var task in taskListOrdered) {
       print('task: ${task.id}');
       bool _isOpen = task.isOpen;
       bool _updateIsOpen = task.updateIsOpen;
@@ -131,15 +154,15 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
         return null;
       }
     }
-    if (state.taskState.taskFilter == TaskFilter.forSolve) {
-      taskList.removeWhere((element) => element.isOpen == false);
-    }
+    // if (state.taskState.taskFilter == TaskFilter.forSolve) {
+    //   taskList.removeWhere((element) => element.isOpen == false);
+    // }
     if (state.taskState.taskCurrent != null) {
-      int index = taskList.indexWhere(
+      int index = taskListOrdered.indexWhere(
           (element) => element.id == state.taskState.taskCurrent.id);
       print(index);
       if (index >= 0) {
-        TaskModel taskModelTemp = taskList.firstWhere(
+        TaskModel taskModelTemp = taskListOrdered.firstWhere(
             (element) => element.id == state.taskState.taskCurrent.id);
         taskModel = TaskModel(taskModelTemp.id).fromMap(taskModelTemp.toMap());
       }
@@ -147,7 +170,7 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
 
     return state.copyWith(
       taskState: state.taskState.copyWith(
-        taskList: taskList,
+        taskList: taskListOrdered,
         taskCurrent: taskModel,
       ),
     );

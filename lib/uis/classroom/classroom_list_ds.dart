@@ -179,18 +179,25 @@ class _ClassroomListDSState extends State<ClassroomListDS> {
                       widget.onStudentList(classroom.id);
                     },
                   ),
+                  // IconButton(
+                  //   tooltip: 'Histórico de tarefas',
+                  //   icon: Icon(Icons.folder_open),
+                  //   onPressed: () async {
+                  //     widget.onTaskList(classroom.id);
+                  //   },
+                  // ),
+                  // IconButton(
+                  //   tooltip: 'Tarefas para desenvolvimento',
+                  //   icon: Icon(Icons.assignment),
+                  //   onPressed: () async {
+                  //     widget.onTaskListOpen(classroom.id);
+                  //   },
+                  // ),
                   IconButton(
-                    tooltip: 'Histórico de tarefas',
-                    icon: Icon(Icons.folder_open),
-                    onPressed: () async {
-                      widget.onTaskList(classroom.id);
-                    },
-                  ),
-                  IconButton(
-                    tooltip: 'Tarefas para desenvolvimento',
-                    icon: Icon(Icons.assignment),
-                    onPressed: () async {
-                      widget.onTaskListOpen(classroom.id);
+                    tooltip: 'Exames',
+                    icon: Icon(Icons.format_list_numbered),
+                    onPressed: () {
+                      widget.onExameList(classroom.id);
                     },
                   ),
                 ],

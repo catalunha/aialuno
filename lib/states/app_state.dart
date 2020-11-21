@@ -1,4 +1,5 @@
 import 'package:aialuno/states/classroom_state.dart';
+import 'package:aialuno/states/exame_state.dart';
 import 'package:aialuno/states/logged_state.dart';
 import 'package:aialuno/states/student_state.dart';
 import 'package:aialuno/states/task_state.dart';
@@ -14,7 +15,7 @@ class AppState {
   // final SituationState situationState;
   // final KnowState knowState;
   // final SimulationState simulationState;
-  // final ExameState exameState;
+  final ExameState exameState;
   // final QuestionState questionState;
   final TaskState taskState;
 
@@ -27,7 +28,7 @@ class AppState {
     // this.situationState,
     // this.knowState,
     // this.simulationState,
-    // this.exameState,
+    this.exameState,
     // this.questionState,
     this.taskState,
   });
@@ -41,7 +42,7 @@ class AppState {
         // situationState: SituationState.initialState(),
         // knowState: KnowState.initialState(),
         // simulationState: SimulationState.initialState(),
-        // exameState: ExameState.initialState(),
+        exameState: ExameState.initialState(),
         // questionState: QuestionState.initialState(),
         taskState: TaskState.initialState(),
       );
@@ -54,7 +55,7 @@ class AppState {
     // SituationState situationState,
     // KnowState knowState,
     // SimulationState simulationState,
-    // ExameState exameState,
+    ExameState exameState,
     // QuestionState questionState,
     TaskState taskState,
   }) =>
@@ -67,7 +68,7 @@ class AppState {
         // situationState: situationState ?? this.situationState,
         // knowState: knowState ?? this.knowState,
         // simulationState: simulationState ?? this.simulationState,
-        // exameState: exameState ?? this.exameState,
+        exameState: exameState ?? this.exameState,
         // questionState: questionState ?? this.questionState,
         taskState: taskState ?? this.taskState,
       );
@@ -75,7 +76,7 @@ class AppState {
   int get hashCode =>
       taskState.hashCode ^
       // questionState.hashCode ^
-      // exameState.hashCode ^
+      exameState.hashCode ^
       // simulationState.hashCode ^
       // knowState.hashCode ^
       // situationState.hashCode ^
@@ -91,7 +92,7 @@ class AppState {
       other is AppState &&
           // taskState == other.taskState &&
           // questionState == other.questionState &&
-          // exameState == other.exameState &&
+          exameState == other.exameState &&
           // knowState == other.knowState &&
           // situationState == other.situationState &&
           studentState == other.studentState &&
