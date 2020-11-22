@@ -71,28 +71,30 @@ class StreamColTaskAsyncTaskAction extends ReduxAction<AppState> {
     String studentUserId = state.userState.userCurrent.id;
     Query collRef;
     String classroomId = state.classroomState.classroomCurrent.id;
-    collRef = firestore
-        .collection(TaskModel.collection)
-        .where('classroomRef.id', isEqualTo: classroomId)
-        .where('studentUserRef.id', isEqualTo: studentUserId)
-        // .where('isOpen', isEqualTo: true)
-        .where('start', isLessThan: DateTime.now());
-    // if (state.taskState.taskFilter == TaskFilter.forSolve) {
-    //   print('TaskFilter.forSolve');
-    //   collRef = firestore
-    //       .collection(TaskModel.collection)
-    //       .where('classroomRef.id', isEqualTo: classroomId)
-    //       .where('studentUserRef.id', isEqualTo: studentUserId)
-    //       .where('isOpen', isEqualTo: true)
-    //       .where('start', isLessThan: DateTime.now());
-    // } else if (state.taskState.taskFilter == TaskFilter.forView) {
-    //   print('TaskFilter.forView');
-    //   collRef = firestore
-    //       .collection(TaskModel.collection)
-    //       .where('classroomRef.id', isEqualTo: classroomId)
-    //       .where('studentUserRef.id', isEqualTo: studentUserId)
-    //       .where('start', isLessThan: DateTime.now());
-    // }
+    String exameId = state.exameState?.exameCurrent?.id;
+    // collRef = firestore
+    //     .collection(TaskModel.collection)
+    //     .where('classroomRef.id', isEqualTo: classroomId)
+    //     .where('studentUserRef.id', isEqualTo: studentUserId)
+    //     // .where('isOpen', isEqualTo: true)
+    //     .where('start', isLessThan: DateTime.now());
+    if (state.taskState.taskFilter == TaskFilter.forSolve) {
+      print('TaskFilter.forSolve');
+      collRef = firestore
+          .collection(TaskModel.collection)
+          .where('classroomRef.id', isEqualTo: classroomId)
+          .where('studentUserRef.id', isEqualTo: studentUserId)
+          .where('isOpen', isEqualTo: true)
+          .where('start', isLessThan: DateTime.now());
+    } else if (state.taskState.taskFilter == TaskFilter.forView) {
+      print('TaskFilter.forView');
+      collRef = firestore
+          .collection(TaskModel.collection)
+          .where('classroomRef.id', isEqualTo: classroomId)
+          .where('studentUserRef.id', isEqualTo: studentUserId)
+          .where('exameRef.id', isEqualTo: exameId)
+          .where('start', isLessThan: DateTime.now());
+    }
     Stream<QuerySnapshot> streamQuerySnapshot = collRef.snapshots();
 
     Stream<List<TaskModel>> streamList = streamQuerySnapshot.map(
@@ -128,12 +130,15 @@ class GetDocsTaskListAsyncTaskAction extends ReduxAction<AppState> {
     };
 
     List<TaskModel> taskListOrdered = [];
-    if (state.exameState?.exameCurrent?.questionId != null) {
+    if (state.exameState?.exameCurrent?.id != null &&
+        state.exameState?.exameCurrent?.questionId != null) {
+      print('exame nao é nulo ${state.exameState?.exameCurrent?.id}');
       for (String id in state.exameState.exameCurrent.questionId)
         if (mapping.containsKey(id)) {
           taskListOrdered.add(mapping[id]);
         }
     } else {
+      print('exame é nulo');
       taskListOrdered.addAll(taskList);
     }
     print('GetDocsTaskListAsyncTaskAction... ${taskList.length}');

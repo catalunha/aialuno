@@ -1,7 +1,7 @@
 import 'package:aialuno/conectors/classroom/classroom_list.dart';
 import 'package:aialuno/conectors/home/home_page.dart';
 import 'package:aialuno/conectors/login/login_page.dart';
-import 'package:aialuno/conectors/task/task_list_open.dart';
+import 'package:aialuno/conectors/task/task_list.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:aialuno/states/types_states.dart';
 import 'package:async_redux/async_redux.dart';

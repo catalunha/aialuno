@@ -40,6 +40,8 @@ class ViewModel extends BaseModel<AppState> {
         },
         onExameList: (String classroomId) {
           dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
+          dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
+          dispatch(StreamColTaskAsyncTaskAction());
           dispatch(NavigateAction.pushNamed(Routes.exameList));
         },
         onTaskList: (String classroomId) {
@@ -50,7 +52,7 @@ class ViewModel extends BaseModel<AppState> {
         onTaskListOpen: (String classroomId) {
           dispatch(SetClassroomCurrentSyncClassroomAction(classroomId));
           dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
-          dispatch(NavigateAction.pushNamed(Routes.taskListOpen));
+          dispatch(NavigateAction.pushNamed(Routes.taskList));
         },
         onChangeClassroomListOrder: (int oldIndex, int newIndex) {
           dispatch(UpdateDocclassroomIdInUserAsyncClassroomAction(

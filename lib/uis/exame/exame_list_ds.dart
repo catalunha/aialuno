@@ -8,12 +8,12 @@ class ExameListDS extends StatefulWidget {
   final List<ExameModel> exameList;
   final List<TaskModel> taskList;
   final Function(String) onTaskList;
-  final Function(String) onTaskListOpen;
+  // final Function(String) onTaskListOpen;
   const ExameListDS({
     Key key,
     this.exameList,
     this.onTaskList,
-    this.onTaskListOpen,
+    // this.onTaskListOpen,
     this.classroomRef,
     this.taskList,
   }) : super(key: key);
@@ -116,7 +116,7 @@ class _ExameListDSState extends State<ExameListDS> {
               tooltip: 'Tarefas para desenvolvimento',
               icon: Icon(Icons.assignment),
               onPressed: () async {
-                widget.onTaskListOpen(exame.id);
+                widget.onTaskList(exame.id);
               },
             ),
           ),

@@ -15,16 +15,18 @@ class ViewModel extends BaseModel<AppState> {
   List<ExameModel> exameList;
   List<TaskModel> taskList;
   Function(String) onTaskList;
-  Function(String) onTaskListOpen;
+  // Function(String) onTaskListOpen;
   ViewModel();
   ViewModel.build({
     @required this.classroomRef,
     @required this.exameList,
     @required this.taskList,
     @required this.onTaskList,
-    @required this.onTaskListOpen,
+    // @required this.onTaskListOpen,
   }) : super(equals: [
+          classroomRef,
           exameList,
+          taskList,
         ]);
   @override
   ViewModel fromStore() => ViewModel.build(
@@ -36,11 +38,11 @@ class ViewModel extends BaseModel<AppState> {
           dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forView));
           dispatch(NavigateAction.pushNamed(Routes.taskList));
         },
-        onTaskListOpen: (String exameId) {
-          dispatch(SetExameCurrentSyncExameAction(exameId));
-          dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
-          dispatch(NavigateAction.pushNamed(Routes.taskListOpen));
-        },
+        // onTaskListOpen: (String exameId) {
+        //   dispatch(SetExameCurrentSyncExameAction(exameId));
+        //   dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
+        //   dispatch(NavigateAction.pushNamed(Routes.taskList));
+        // },
       );
 }
 
@@ -51,7 +53,6 @@ class ExameList extends StatelessWidget {
       //debug: this,
       model: ViewModel(),
       onInit: (store) {
-        store.dispatch(StreamColTaskAsyncTaskAction());
         store.dispatch(StreamColExameAsyncExameAction());
       },
       builder: (context, viewModel) => ExameListDS(
@@ -59,7 +60,7 @@ class ExameList extends StatelessWidget {
         exameList: viewModel.exameList,
         taskList: viewModel.taskList,
         onTaskList: viewModel.onTaskList,
-        onTaskListOpen: viewModel.onTaskListOpen,
+        // onTaskListOpen: viewModel.onTaskListOpen,
       ),
     );
   }
