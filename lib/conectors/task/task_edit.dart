@@ -4,42 +4,40 @@ import 'package:aialuno/models/question_model.dart';
 import 'package:aialuno/models/simulation_model.dart';
 import 'package:aialuno/models/situation_model.dart';
 import 'package:aialuno/models/task_model.dart';
-import 'package:aialuno/routes.dart';
 import 'package:aialuno/uis/task/task_edit_ds.dart';
 import 'package:flutter/material.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:async_redux/async_redux.dart';
 
-class ViewModel extends BaseModel<AppState> {
-  bool isDataValid;
-  String id;
+class ViewModel extends Vm {
+  final bool isDataValid;
+  final String id;
   //dados da tarefa
-  dynamic tempoPResponder;
+  final dynamic tempoPResponder;
   //dados do exame
-  dynamic start;
-  dynamic end;
-  int scoreExame;
+  final dynamic start;
+  final dynamic end;
+  final int scoreExame;
   //dados da questao
-  int attempt;
-  int time;
-  int error;
-  int scoreQuestion;
+  final int attempt;
+  final int time;
+  final int error;
+  final int scoreQuestion;
   // dados para atualização
-  dynamic started;
-  dynamic lastSendAnswer;
-  dynamic attempted;
+  final dynamic started;
+  final dynamic lastSendAnswer;
+  final dynamic attempted;
   //Referencias
-  ExameModel exameRef;
-  QuestionModel questionRef;
-  SituationModel situationRef;
+  final ExameModel exameRef;
+  final QuestionModel questionRef;
+  final SituationModel situationRef;
   //input e output
-  Map<String, Input> simulationInput;
-  Map<String, Output> simulationOutput;
+  final Map<String, Input> simulationInput;
+  final Map<String, Output> simulationOutput;
 
-  Function(Map<String, Output>) onUpdateSimulationOutput;
-  Function(String) onCloseTaskId;
-  ViewModel();
-  ViewModel.build({
+  final Function(Map<String, Output>) onUpdateSimulationOutput;
+  final Function(String) onCloseTaskId;
+  ViewModel({
     @required this.isDataValid,
     @required this.id,
     @required this.tempoPResponder,
@@ -80,26 +78,12 @@ class ViewModel extends BaseModel<AppState> {
           simulationInput,
           simulationOutput,
         ]);
+}
 
-  bool _isDataValid() {
-    TaskModel taskModel = state.taskState.taskCurrent;
-    bool _return = true;
-    print('_isDataValid: taskModel.isOpen: ${taskModel.isOpen}');
-    print(
-        '_isDataValid: taskModel?.tempoPResponder?.inSeconds:${taskModel?.tempoPResponder?.inSeconds ?? 0}');
-    if (taskModel != null && taskModel.isOpen != null && !taskModel.isOpen) {
-      _return = false;
-    }
-
-    if (taskModel?.tempoPResponder?.inSeconds == null) {
-      _return = false;
-    }
-
-    return _return;
-  }
-
+class Factory extends VmFactory<AppState, TaskEdit> {
+  Factory(widget) : super(widget);
   @override
-  ViewModel fromStore() => ViewModel.build(
+  ViewModel fromStore() => ViewModel(
         isDataValid: _isDataValid(),
         id: state.taskState.taskCurrent.id,
         tempoPResponder: state.taskState.taskCurrent.tempoPResponder,
@@ -128,6 +112,22 @@ class ViewModel extends BaseModel<AppState> {
           dispatch(CloseTaskAsyncTaskAction(closeTaskId));
         },
       );
+  bool _isDataValid() {
+    TaskModel taskModel = state.taskState.taskCurrent;
+    bool _return = true;
+    print('_isDataValid: taskModel.isOpen: ${taskModel.isOpen}');
+    print(
+        '_isDataValid: taskModel?.tempoPResponder?.inSeconds:${taskModel?.tempoPResponder?.inSeconds ?? 0}');
+    if (taskModel != null && taskModel.isOpen != null && !taskModel.isOpen) {
+      _return = false;
+    }
+
+    if (taskModel?.tempoPResponder?.inSeconds == null) {
+      _return = false;
+    }
+
+    return _return;
+  }
 }
 
 class TaskEdit extends StatelessWidget {
@@ -135,7 +135,7 @@ class TaskEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ViewModel>(
       //debug: this,
-      model: ViewModel(),
+      vm: Factory(this),
       builder: (context, viewModel) => TaskEditDS(
         isDataValid: viewModel.isDataValid,
         id: viewModel.id,

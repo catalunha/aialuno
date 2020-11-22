@@ -10,26 +10,27 @@ import 'package:aialuno/routes.dart';
 import 'package:aialuno/states/app_state.dart';
 import 'package:aialuno/uis/exame/exame_list_ds.dart';
 
-class ViewModel extends BaseModel<AppState> {
-  ClassroomModel classroomRef;
-  List<ExameModel> exameList;
-  List<TaskModel> taskList;
-  Function(String) onTaskList;
-  // Function(String) onTaskListOpen;
-  ViewModel();
-  ViewModel.build({
+class ViewModel extends Vm {
+  final ClassroomModel classroomRef;
+  final List<ExameModel> exameList;
+  final List<TaskModel> taskList;
+  final Function(String) onTaskList;
+  ViewModel({
     @required this.classroomRef,
     @required this.exameList,
     @required this.taskList,
     @required this.onTaskList,
-    // @required this.onTaskListOpen,
   }) : super(equals: [
           classroomRef,
           exameList,
           taskList,
         ]);
+}
+
+class Factory extends VmFactory<AppState, ExameList> {
+  Factory(widget) : super(widget);
   @override
-  ViewModel fromStore() => ViewModel.build(
+  ViewModel fromStore() => ViewModel(
         classroomRef: state.classroomState.classroomCurrent,
         exameList: state.exameState.exameList,
         taskList: state.taskState.taskList,
@@ -38,11 +39,6 @@ class ViewModel extends BaseModel<AppState> {
           dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forView));
           dispatch(NavigateAction.pushNamed(Routes.taskList));
         },
-        // onTaskListOpen: (String exameId) {
-        //   dispatch(SetExameCurrentSyncExameAction(exameId));
-        //   dispatch(SetTaskFilterSyncTaskAction(TaskFilter.forSolve));
-        //   dispatch(NavigateAction.pushNamed(Routes.taskList));
-        // },
       );
 }
 
@@ -51,16 +47,15 @@ class ExameList extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ViewModel>(
       //debug: this,
-      model: ViewModel(),
+      vm: Factory(this),
       onInit: (store) {
         store.dispatch(StreamColExameAsyncExameAction());
       },
-      builder: (context, viewModel) => ExameListDS(
+      builder: (BuildContext context, ViewModel viewModel) => ExameListDS(
         classroomRef: viewModel.classroomRef,
         exameList: viewModel.exameList,
         taskList: viewModel.taskList,
         onTaskList: viewModel.onTaskList,
-        // onTaskListOpen: viewModel.onTaskListOpen,
       ),
     );
   }
