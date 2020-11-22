@@ -24,7 +24,7 @@ class HomePageDS extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.people),
             title: Text('Tarefas open'),
-            onTap: () => Navigator.pushNamed(context, Routes.taskListOpen),
+            onTap: () => Navigator.pushNamed(context, Routes.taskList),
           ),
           ListTile(
             leading: Icon(Icons.fact_check_outlined),

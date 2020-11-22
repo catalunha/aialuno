@@ -94,6 +94,10 @@ enum QuestionOrder {
 enum TaskFilter {
   forSolve,
   forView,
+  isActive,
+  isNotActive,
+  whereClassroomAndStudent,
+  whereQuestionAndStudent,
 }
 enum TaskOrder {
   name,
